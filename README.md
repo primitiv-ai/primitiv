@@ -52,7 +52,7 @@ Use these in Claude Code (or any compatible agent):
 | `/primitiv.clarify` | Interactive Q&A to resolve assumptions |
 | `/primitiv.plan` | Technical plan with codebase analysis |
 | `/primitiv.tasks` | Break plan into actionable tasks |
-| `/primitiv.implement` | Execute tasks |
+| `/primitiv.implement` | Execute tasks (parallel when possible via git worktrees) |
 | `/primitiv.test-feature` | Generate & run tests from acceptance criteria |
 | `/primitiv.compushpr` | Commit, push, create PR, squash merge |
 
@@ -100,6 +100,17 @@ engine.getProjectContext();
 ```
 draft → gate-1-passed → gate-2-passed → gate-3-passed → clarified → planned → tasked → in-progress → tested → completed
 ```
+
+## Parallel Implementation
+
+`/primitiv.implement` automatically parallelizes independent tasks using git worktrees:
+
+1. **Dependency graph** — Tasks declare `dependsOn` relationships (set by `/primitiv.tasks`)
+2. **Wave computation** — Tasks are grouped into waves via topological sort. Tasks in the same wave have no mutual dependencies and run concurrently.
+3. **Isolated execution** — Each parallel task runs in its own git worktree via a Claude Code subagent
+4. **Merge-back** — Worktree branches are merged back after each wave completes, with automatic conflict resolution
+
+Single-task waves and single-task specs skip the worktree overhead and execute directly.
 
 ## GitNexus Integration
 

@@ -153,6 +153,20 @@ describe("Task schema", () => {
     const result = TaskItemSchema.parse(data);
     expect(result.id).toBe("TASK-001");
     expect(result.status).toBe("pending");
+    expect(result.dependsOn).toEqual([]);
+  });
+
+  it("parses task item with dependsOn", () => {
+    const data = {
+      id: "TASK-003",
+      title: "Create auth middleware",
+      status: "pending",
+      files: ["src/middleware/auth.ts"],
+      acceptanceCriteria: ["Middleware validates JWT"],
+      dependsOn: ["TASK-001", "TASK-002"],
+    };
+    const result = TaskItemSchema.parse(data);
+    expect(result.dependsOn).toEqual(["TASK-001", "TASK-002"]);
   });
 
   it("parses tasks frontmatter", () => {
@@ -165,6 +179,23 @@ describe("Task schema", () => {
     };
     const result = TasksFrontmatterSchema.parse(data);
     expect(result.tasks).toHaveLength(1);
+  });
+
+  it("parses tasks frontmatter with dependencies", () => {
+    const data = {
+      type: "tasks",
+      specId: "SPEC-001",
+      tasks: [
+        { id: "TASK-001", title: "Create models", status: "pending", files: ["src/models.ts"], acceptanceCriteria: [], dependsOn: [] },
+        { id: "TASK-002", title: "Create API", status: "pending", files: ["src/api.ts"], acceptanceCriteria: [], dependsOn: [] },
+        { id: "TASK-003", title: "Integrate", status: "pending", files: ["src/app.ts"], acceptanceCriteria: [], dependsOn: ["TASK-001", "TASK-002"] },
+      ],
+    };
+    const result = TasksFrontmatterSchema.parse(data);
+    expect(result.tasks).toHaveLength(3);
+    expect(result.tasks[0].dependsOn).toEqual([]);
+    expect(result.tasks[1].dependsOn).toEqual([]);
+    expect(result.tasks[2].dependsOn).toEqual(["TASK-001", "TASK-002"]);
   });
 });
 

@@ -8,6 +8,7 @@ export const TaskItemSchema = z.object({
   status: z.enum(["pending", "in-progress", "completed", "skipped"]).default("pending"),
   files: z.array(z.string()).default([]),
   acceptanceCriteria: z.array(z.string()).default([]),
+  dependsOn: z.array(z.string()).default([]),
 });
 
 export type TaskItem = z.infer<typeof TaskItemSchema>;
