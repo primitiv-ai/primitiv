@@ -39,10 +39,10 @@ Optional spec ID: `$ARGUMENTS`
 
 4. **When all tasks are done:**
    - Update spec status to `in-progress` (when starting first task)
-   - Update spec status to `completed` (when all tasks done)
+   - Do NOT set status to `completed` — that happens after testing and PR
    - Summarize what was implemented
 
 ## Output
 - For each task: show what was implemented and files changed
 - Final summary: total tasks completed/skipped
-- Remind that the branch is ready for review/merge
+- Suggest next step: `/primitiv.test-feature` to generate and run tests

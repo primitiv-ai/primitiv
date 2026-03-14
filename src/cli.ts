@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { runInit } from "./commands/init.js";
 import { runValidate } from "./commands/validate.js";
 import { runStatus } from "./commands/status.js";
+import { runUpdate } from "./commands/update.js";
 
 export function createCli(): Command {
   const program = new Command();
@@ -10,7 +11,7 @@ export function createCli(): Command {
   program
     .name("primitiv")
     .description("Spec Driven Development engine for AI-assisted software development")
-    .version("0.1.0");
+    .version("0.2.0");
 
   program
     .command("init")
@@ -38,6 +39,15 @@ export function createCli(): Command {
     .argument("[spec-id]", "Spec ID for detailed view")
     .action(async (specId?: string) => {
       await runStatus(resolve("."), specId);
+    });
+
+  program
+    .command("update")
+    .description("Update slash commands and MCP config (preserves all data)")
+    .argument("[dir]", "Target directory", ".")
+    .action(async (dir: string) => {
+      const targetDir = resolve(dir);
+      await runUpdate(targetDir);
     });
 
   return program;

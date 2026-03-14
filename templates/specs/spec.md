@@ -19,6 +19,10 @@ updatedAt: ""
 
 - [ ] TODO
 
+## Test Strategy
+
+<!-- What types of tests are needed: unit, integration, API, UI -->
+
 ## Constraints
 
 <!-- Technical, business, or regulatory constraints -->

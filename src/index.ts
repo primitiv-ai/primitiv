@@ -12,6 +12,7 @@ export * from "./schemas/constitution.js";
 export * from "./schemas/spec.js";
 export * from "./schemas/plan.js";
 export * from "./schemas/task.js";
+export * from "./schemas/testResults.js";
 
 // State machine
 export { canTransition, assertTransition, getNextStatuses, isTerminal } from "./state/specStateMachine.js";

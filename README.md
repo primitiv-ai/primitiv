@@ -16,12 +16,14 @@ primitiv init .
   │
   ├─ /primitiv.specify <description> → Create spec (creates git branch)
   │     ├─ Gate 1, 2, 3 checks
-  │     ├─ /primitiv.clarify  → Interactive Q&A
-  │     ├─ /primitiv.plan     → Technical plan (searches codebase via GitNexus)
-  │     ├─ /primitiv.tasks    → Task breakdown
-  │     └─ /primitiv.implement → Execute tasks
+  │     ├─ /primitiv.clarify       → Interactive Q&A
+  │     ├─ /primitiv.plan          → Technical plan (searches codebase via GitNexus)
+  │     ├─ /primitiv.tasks         → Task breakdown
+  │     ├─ /primitiv.implement     → Execute tasks
+  │     ├─ /primitiv.test-feature  → Generate & run tests
+  │     └─ /primitiv.compushpr     → Commit, push, PR, squash merge
   │
-  └─ Done (merge branch)
+  └─ Done
 ```
 
 ## Quick Start
@@ -35,7 +37,7 @@ primitiv init .                    # brownfield (default, analyzes existing code
 primitiv init . --greenfield       # greenfield (empty templates)
 ```
 
-This creates `.primitiv/` (gates, constitutions, specs) and installs 8 slash commands into `.claude/commands/`.
+This creates `.primitiv/` (gates, constitutions, specs) and installs 10 slash commands into `.claude/commands/`.
 
 ## Slash Commands
 
@@ -51,6 +53,8 @@ Use these in Claude Code (or any compatible agent):
 | `/primitiv.plan` | Technical plan with codebase analysis |
 | `/primitiv.tasks` | Break plan into actionable tasks |
 | `/primitiv.implement` | Execute tasks |
+| `/primitiv.test-feature` | Generate & run tests from acceptance criteria |
+| `/primitiv.compushpr` | Commit, push, create PR, squash merge |
 
 All commands also support `amend` to modify existing documents:
 ```
@@ -65,6 +69,7 @@ primitiv status                      # Show all specs and pipeline state
 primitiv status SPEC-001             # Show specific spec details
 primitiv validate SPEC-001           # Validate against all gates
 primitiv validate SPEC-001 --gate 1  # Validate against specific gate
+primitiv update .                    # Update slash commands (preserves data)
 ```
 
 ## SDK
@@ -93,7 +98,7 @@ engine.getProjectContext();
 ## Spec Lifecycle
 
 ```
-draft → gate-1-passed → gate-2-passed → gate-3-passed → clarified → planned → tasked → in-progress → completed
+draft → gate-1-passed → gate-2-passed → gate-3-passed → clarified → planned → tasked → in-progress → tested → completed
 ```
 
 ## GitNexus Integration
@@ -116,7 +121,8 @@ draft → gate-1-passed → gate-2-passed → gate-3-passed → clarified → pl
 │       ├── spec.md
 │       ├── clarifications.md
 │       ├── plan.md
-│       └── tasks.md
+│       ├── tasks.md
+│       └── test-results.md
 └── .state.json
 ```
 

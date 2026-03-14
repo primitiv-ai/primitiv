@@ -20,6 +20,7 @@ export const SPEC_STATUSES = [
   "planned",
   "tasked",
   "in-progress",
+  "tested",
   "completed",
 ] as const;
 

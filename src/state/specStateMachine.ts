@@ -10,7 +10,8 @@ const TRANSITIONS: Record<SpecStatus, SpecStatus[]> = {
   "clarified": ["planned"],
   "planned": ["tasked"],
   "tasked": ["in-progress"],
-  "in-progress": ["completed"],
+  "in-progress": ["tested", "completed"],
+  "tested": ["completed"],
   "completed": [],
 };
 
@@ -35,7 +36,7 @@ export function isTerminal(status: SpecStatus): boolean {
 export function getStatusIndex(status: SpecStatus): number {
   const order: SpecStatus[] = [
     "draft", "gate-1-passed", "gate-2-passed", "gate-3-passed",
-    "clarified", "planned", "tasked", "in-progress", "completed",
+    "clarified", "planned", "tasked", "in-progress", "tested", "completed",
   ];
   return order.indexOf(status);
 }

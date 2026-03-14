@@ -42,7 +42,7 @@ The user's feature description: `$ARGUMENTS`
      createdAt: "<now ISO>"
      updatedAt: "<now ISO>"
      ```
-   - Write rich content: Description, Acceptance Criteria (checkboxes), Constraints, Out of Scope
+   - Write rich content: Description, Acceptance Criteria (checkboxes), Test Strategy, Constraints, Out of Scope
    - Write to `.primitiv/specs/SPEC-XXX-<slug>/spec.md`
 
 5. **Run gate checks:**

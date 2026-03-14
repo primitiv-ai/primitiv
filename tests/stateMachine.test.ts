@@ -12,7 +12,9 @@ describe("specStateMachine", () => {
     expect(canTransition("clarified", "planned")).toBe(true);
     expect(canTransition("planned", "tasked")).toBe(true);
     expect(canTransition("tasked", "in-progress")).toBe(true);
+    expect(canTransition("in-progress", "tested")).toBe(true);
     expect(canTransition("in-progress", "completed")).toBe(true);
+    expect(canTransition("tested", "completed")).toBe(true);
   });
 
   it("rejects invalid transitions", () => {
@@ -20,6 +22,8 @@ describe("specStateMachine", () => {
     expect(canTransition("draft", "planned")).toBe(false);
     expect(canTransition("completed", "draft")).toBe(false);
     expect(canTransition("gate-1-passed", "gate-3-passed")).toBe(false);
+    expect(canTransition("tested", "in-progress")).toBe(false);
+    expect(canTransition("draft", "tested")).toBe(false);
   });
 
   it("assertTransition throws on invalid transition", () => {
@@ -33,6 +37,8 @@ describe("specStateMachine", () => {
   it("getNextStatuses returns valid next states", () => {
     expect(getNextStatuses("draft")).toEqual(["gate-1-passed"]);
     expect(getNextStatuses("gate-3-passed")).toEqual(["clarified", "planned"]);
+    expect(getNextStatuses("in-progress")).toEqual(["tested", "completed"]);
+    expect(getNextStatuses("tested")).toEqual(["completed"]);
     expect(getNextStatuses("completed")).toEqual([]);
   });
 
@@ -44,7 +50,9 @@ describe("specStateMachine", () => {
 
   it("getStatusIndex returns correct order", () => {
     expect(getStatusIndex("draft")).toBe(0);
-    expect(getStatusIndex("completed")).toBe(8);
+    expect(getStatusIndex("tested")).toBe(8);
+    expect(getStatusIndex("completed")).toBe(9);
     expect(getStatusIndex("planned")).toBeLessThan(getStatusIndex("tasked"));
+    expect(getStatusIndex("in-progress")).toBeLessThan(getStatusIndex("tested"));
   });
 });

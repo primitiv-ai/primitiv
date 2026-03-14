@@ -17,6 +17,12 @@ export async function runStatus(targetDir: string, specId?: string): Promise<voi
     console.log(`  Plan:     ${graph.plan ? "✓" : "—"}`);
     console.log(`  Tasks:    ${graph.tasks ? `✓ (${graph.tasks.data.tasks.length} tasks)` : "—"}`);
     console.log(`  Clarify:  ${graph.clarifications ? "✓" : "—"}`);
+    if (graph.testResults) {
+      const s = graph.testResults.data.summary;
+      console.log(`  Tests:    ✓ (${s.passed}/${s.total} passed, ${s.failed} failed, ${s.skipped} skipped)`);
+    } else {
+      console.log(`  Tests:    —`);
+    }
     return;
   }
 
@@ -54,6 +60,7 @@ function formatStatus(status: string): string {
     "planned": chalk.magenta,
     "tasked": chalk.yellow,
     "in-progress": chalk.yellow,
+    "tested": chalk.greenBright,
     "completed": chalk.green,
   };
   const colorFn = colors[status] ?? chalk.white;

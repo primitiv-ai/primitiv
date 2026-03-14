@@ -5,9 +5,11 @@ import { parseDocument, serializeDocument } from "../utils/frontmatter.js";
 import { SpecFrontmatterSchema } from "../schemas/spec.js";
 import { PlanFrontmatterSchema } from "../schemas/plan.js";
 import { TasksFrontmatterSchema } from "../schemas/task.js";
+import { TestResultsFrontmatterSchema } from "../schemas/testResults.js";
 import type { SpecFrontmatter } from "../schemas/spec.js";
 import type { PlanFrontmatter } from "../schemas/plan.js";
 import type { TasksFrontmatter } from "../schemas/task.js";
+import type { TestResultsFrontmatter } from "../schemas/testResults.js";
 import type { ParsedDocument } from "../utils/frontmatter.js";
 import type { SpecStatus } from "../schemas/common.js";
 import { SpecNotFoundError } from "../utils/errors.js";
@@ -35,7 +37,7 @@ export class SpecManager {
       updatedAt: now,
     };
 
-    const content = `## Description\n\n${description}\n\n## Acceptance Criteria\n\n- [ ] TODO\n\n## Constraints\n\nNone specified.`;
+    const content = `## Description\n\n${description}\n\n## Acceptance Criteria\n\n- [ ] TODO\n\n## Test Strategy\n\n<!-- What types of tests are needed: unit, integration, API, UI -->\n\n## Constraints\n\nNone specified.\n\n## Out of Scope\n\n<!-- What this spec explicitly does NOT cover -->`;
     const serialized = serializeDocument(data as unknown as Record<string, unknown>, content);
     writePrimitivFile(this.projectRoot, ["specs", dirName, "spec.md"], serialized);
 
@@ -99,15 +101,24 @@ export class SpecManager {
     return parseDocument(raw, TasksFrontmatterSchema);
   }
 
+  getTestResults(specId: string) {
+    const dir = getSpecDir(this.projectRoot, specId);
+    const testResultsPath = join(dir, "test-results.md");
+    if (!existsSync(testResultsPath)) return null;
+    const raw = readFileSync(testResultsPath, "utf-8");
+    return parseDocument(raw, TestResultsFrontmatterSchema);
+  }
+
   getSpecGraph(specId: string) {
     const spec = this.get(specId);
     const plan = this.getPlan(specId);
     const tasks = this.getTasks(specId);
+    const testResults = this.getTestResults(specId);
 
     const dir = getSpecDir(this.projectRoot, specId);
     const clarPath = join(dir, "clarifications.md");
     const clarifications = existsSync(clarPath) ? readFileSync(clarPath, "utf-8") : null;
 
-    return { spec, plan, tasks, clarifications };
+    return { spec, plan, tasks, testResults, clarifications };
   }
 }

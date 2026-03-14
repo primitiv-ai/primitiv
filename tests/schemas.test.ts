@@ -5,10 +5,12 @@ import { SpecFrontmatterSchema } from "../src/schemas/spec.js";
 import { PlanFrontmatterSchema } from "../src/schemas/plan.js";
 import { TasksFrontmatterSchema, TaskItemSchema } from "../src/schemas/task.js";
 import { SpecStatusSchema, GateTypeSchema, ConstitutionTypeSchema } from "../src/schemas/common.js";
+import { TestResultsFrontmatterSchema } from "../src/schemas/testResults.js";
 
 describe("Common schemas", () => {
   it("validates spec statuses", () => {
     expect(SpecStatusSchema.parse("draft")).toBe("draft");
+    expect(SpecStatusSchema.parse("tested")).toBe("tested");
     expect(SpecStatusSchema.parse("completed")).toBe("completed");
     expect(() => SpecStatusSchema.parse("invalid")).toThrow();
   });
@@ -163,5 +165,52 @@ describe("Task schema", () => {
     };
     const result = TasksFrontmatterSchema.parse(data);
     expect(result.tasks).toHaveLength(1);
+  });
+});
+
+describe("TestResults schema", () => {
+  it("parses test results frontmatter", () => {
+    const data = {
+      type: "test-results",
+      specId: "SPEC-001",
+      testTypes: ["unit", "integration"],
+      summary: { total: 10, passed: 8, failed: 1, skipped: 1 },
+    };
+    const result = TestResultsFrontmatterSchema.parse(data);
+    expect(result.specId).toBe("SPEC-001");
+    expect(result.testTypes).toEqual(["unit", "integration"]);
+    expect(result.summary.total).toBe(10);
+    expect(result.summary.passed).toBe(8);
+    expect(result.summary.failed).toBe(1);
+  });
+
+  it("applies defaults for test results", () => {
+    const data = {
+      type: "test-results",
+      specId: "SPEC-002",
+    };
+    const result = TestResultsFrontmatterSchema.parse(data);
+    expect(result.version).toBe(1);
+    expect(result.testTypes).toEqual([]);
+    expect(result.summary.total).toBe(0);
+    expect(result.summary.passed).toBe(0);
+  });
+
+  it("validates test types", () => {
+    const data = {
+      type: "test-results",
+      specId: "SPEC-001",
+      testTypes: ["ui", "api", "unit", "integration"],
+    };
+    const result = TestResultsFrontmatterSchema.parse(data);
+    expect(result.testTypes).toHaveLength(4);
+  });
+
+  it("rejects invalid test types", () => {
+    expect(() => TestResultsFrontmatterSchema.parse({
+      type: "test-results",
+      specId: "SPEC-001",
+      testTypes: ["invalid"],
+    })).toThrow();
   });
 });

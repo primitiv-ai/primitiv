@@ -28,5 +28,7 @@ export function getCommandTemplateNames(): string[] {
     "primitiv.plan.md",
     "primitiv.tasks.md",
     "primitiv.implement.md",
+    "primitiv.test-feature.md",
+    "primitiv.compushpr.md",
   ];
 }
