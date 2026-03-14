@@ -1,0 +1,30 @@
+// SDK exports
+export { PrimitivEngine } from "./engine/PrimitivEngine.js";
+export { GateManager } from "./engine/GateManager.js";
+export { ConstitutionManager } from "./engine/ConstitutionManager.js";
+export { SpecManager } from "./engine/SpecManager.js";
+export { FeatureRegistryManager } from "./engine/FeatureRegistryManager.js";
+
+// Schemas
+export * from "./schemas/common.js";
+export * from "./schemas/gates.js";
+export * from "./schemas/constitution.js";
+export * from "./schemas/spec.js";
+export * from "./schemas/plan.js";
+export * from "./schemas/task.js";
+
+// State machine
+export { canTransition, assertTransition, getNextStatuses, isTerminal } from "./state/specStateMachine.js";
+
+// Validation
+export { validateGate, assertGateValid } from "./validation/gateValidator.js";
+export { validateConstitution } from "./validation/constitutionValidator.js";
+export { validateSpecAlignment } from "./validation/specAlignment.js";
+
+// Git
+export { assertGitRepo, isGitRepo, getGitRoot } from "./git/gitGuard.js";
+export { createSpecBranch, isOnSpecBranch, getSpecIdFromBranch } from "./git/branching.js";
+
+// Utils
+export { parseDocument, serializeDocument } from "./utils/frontmatter.js";
+export { PrimitivError, GitNotFoundError, NotInitializedError, SpecNotFoundError } from "./utils/errors.js";
