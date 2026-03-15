@@ -5,6 +5,9 @@ import { GateManager } from "./GateManager.js";
 import { ConstitutionManager } from "./ConstitutionManager.js";
 import { SpecManager } from "./SpecManager.js";
 import { FeatureRegistryManager } from "./FeatureRegistryManager.js";
+import { AuditManager } from "./AuditManager.js";
+import { ResearchManager } from "./ResearchManager.js";
+import { ContractManager } from "./ContractManager.js";
 import { validateGate } from "../validation/gateValidator.js";
 import { validateConstitution } from "../validation/constitutionValidator.js";
 import { validateSpecAlignment } from "../validation/specAlignment.js";
@@ -17,12 +20,19 @@ export class PrimitivEngine {
   public readonly constitutions: ConstitutionManager;
   public readonly specs: SpecManager;
   public readonly features: FeatureRegistryManager;
+  public readonly audit: AuditManager;
+  public readonly research: ResearchManager;
+  public readonly contracts: ContractManager;
 
   private constructor(public readonly projectRoot: string) {
     this.gates = new GateManager(projectRoot);
     this.constitutions = new ConstitutionManager(projectRoot);
     this.specs = new SpecManager(projectRoot);
     this.features = new FeatureRegistryManager(projectRoot);
+    this.audit = new AuditManager(projectRoot);
+    this.research = new ResearchManager(projectRoot);
+    this.contracts = new ContractManager(projectRoot);
+    this.specs.setAuditManager(this.audit);
   }
 
   static load(projectRoot: string): PrimitivEngine {

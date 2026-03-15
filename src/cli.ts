@@ -37,8 +37,10 @@ export function createCli(): Command {
     .command("status")
     .description("Show pipeline state")
     .argument("[spec-id]", "Spec ID for detailed view")
-    .action(async (specId?: string) => {
-      await runStatus(resolve("."), specId);
+    .option("--filter <status>", "Filter specs by status (e.g., planned, in-progress)")
+    .option("--output <path>", "Write markdown report to file")
+    .action(async (specId?: string, options?: { filter?: string; output?: string }) => {
+      await runStatus(resolve("."), specId, options);
     });
 
   program

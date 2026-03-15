@@ -1,8 +1,15 @@
+import { writeFileSync } from "node:fs";
 import { PrimitivEngine } from "../engine/PrimitivEngine.js";
+import { SPEC_STATUSES } from "../schemas/common.js";
+import type { SpecStatus } from "../schemas/common.js";
 import Table from "cli-table3";
 import chalk from "chalk";
 
-export async function runStatus(targetDir: string, specId?: string): Promise<void> {
+export async function runStatus(
+  targetDir: string,
+  specId?: string,
+  options?: { filter?: string; output?: string },
+): Promise<void> {
   const engine = PrimitivEngine.load(targetDir);
 
   if (specId) {
@@ -26,9 +33,25 @@ export async function runStatus(targetDir: string, specId?: string): Promise<voi
     return;
   }
 
-  const specs = engine.listSpecs();
+  // Validate --filter value
+  let statusFilter: SpecStatus | undefined;
+  if (options?.filter) {
+    if (!SPEC_STATUSES.includes(options.filter as SpecStatus)) {
+      console.error(
+        chalk.red(`Invalid filter: "${options.filter}". Valid statuses: ${SPEC_STATUSES.join(", ")}`),
+      );
+      process.exitCode = 1;
+      return;
+    }
+    statusFilter = options.filter as SpecStatus;
+  }
+
+  const specs = engine.listSpecs(statusFilter ? { status: statusFilter } : undefined);
   if (specs.length === 0) {
-    console.log(chalk.yellow("\nNo specs found. Create one with /primitiv.specify"));
+    const msg = statusFilter
+      ? `No specs with status "${statusFilter}".`
+      : "No specs found. Create one with /primitiv.specify";
+    console.log(chalk.yellow(`\n${msg}`));
     return;
   }
 
@@ -48,6 +71,23 @@ export async function runStatus(targetDir: string, specId?: string): Promise<voi
 
   console.log(chalk.bold("\nPrimitiv Specs\n"));
   console.log(table.toString());
+
+  // Write markdown report if --output specified
+  if (options?.output) {
+    const timestamp = new Date().toISOString();
+    const filterNote = statusFilter ? ` (filtered: ${statusFilter})` : "";
+    let md = `# Pipeline Status Report${filterNote}\n\n`;
+    md += `**Generated**: ${timestamp}\n`;
+    md += `**Specs**: ${specs.length}\n\n`;
+    md += `| ID | Title | Status | Branch | Author | Updated |\n`;
+    md += `|----|-------|--------|--------|--------|---------|\n`;
+    for (const spec of specs) {
+      const d = spec.data;
+      md += `| ${d.id} | ${d.title} | ${d.status} | ${d.branch ?? "—"} | ${d.author ?? "—"} | ${d.updatedAt ?? "—"} |\n`;
+    }
+    writeFileSync(options.output, md);
+    console.log(chalk.green(`\n✓ Report written to ${options.output}`));
+  }
 }
 
 function formatStatus(status: string): string {

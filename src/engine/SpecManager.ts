@@ -15,9 +15,16 @@ import type { SpecStatus } from "../schemas/common.js";
 import { SpecNotFoundError } from "../utils/errors.js";
 import { assertTransition } from "../state/specStateMachine.js";
 import { nextSpecId, slugify } from "../utils/ids.js";
+import type { AuditManager } from "./AuditManager.js";
 
 export class SpecManager {
+  private auditManager: AuditManager | null = null;
+
   constructor(private projectRoot: string) {}
+
+  setAuditManager(audit: AuditManager): void {
+    this.auditManager = audit;
+  }
 
   create(title: string, description: string, branch?: string, author?: string): SpecFrontmatter {
     const id = nextSpecId(this.projectRoot);
@@ -40,6 +47,8 @@ export class SpecManager {
     const content = `## Description\n\n${description}\n\n## Acceptance Criteria\n\n- [ ] TODO\n\n## Test Strategy\n\n<!-- What types of tests are needed: unit, integration, API, UI -->\n\n## Constraints\n\nNone specified.\n\n## Out of Scope\n\n<!-- What this spec explicitly does NOT cover -->`;
     const serialized = serializeDocument(data as unknown as Record<string, unknown>, content);
     writePrimitivFile(this.projectRoot, ["specs", dirName, "spec.md"], serialized);
+
+    this.auditManager?.appendAuditRecord(id, "SPEC_CREATED", null, "draft");
 
     return data;
   }
@@ -73,6 +82,7 @@ export class SpecManager {
 
   updateStatus(specId: string, newStatus: SpecStatus): void {
     const doc = this.get(specId);
+    const previousStatus = doc.data.status;
     assertTransition(doc.data.status, newStatus);
     const updated = {
       ...doc.data,
@@ -83,6 +93,8 @@ export class SpecManager {
     const dir = getSpecDir(this.projectRoot, specId);
     const specPath = join(dir, "spec.md");
     writeFileSync(specPath, serialized);
+
+    this.auditManager?.appendAuditRecord(specId, "STATUS_CHANGED", previousStatus, newStatus);
   }
 
   getPlan(specId: string) {
