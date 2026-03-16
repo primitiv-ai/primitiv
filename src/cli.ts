@@ -4,6 +4,7 @@ import { runInit } from "./commands/init.js";
 import { runValidate } from "./commands/validate.js";
 import { runStatus } from "./commands/status.js";
 import { runUpdate } from "./commands/update.js";
+import { runMigrate } from "./commands/migrate.js";
 
 export function createCli(): Command {
   const program = new Command();
@@ -50,6 +51,17 @@ export function createCli(): Command {
     .action(async (dir: string) => {
       const targetDir = resolve(dir);
       await runUpdate(targetDir);
+    });
+
+  const migrate = program
+    .command("migrate")
+    .description("Migrate from another spec-driven development tool");
+
+  migrate
+    .command("speckit")
+    .description("Migrate from GitHub SpecKit to Primitiv")
+    .action(async () => {
+      await runMigrate(resolve("."));
     });
 
   return program;

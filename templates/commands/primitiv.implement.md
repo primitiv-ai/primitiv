@@ -77,7 +77,14 @@ Spawn **parallel subagents**, each in an isolated git worktree:
 
 Repeat Phase 3 for each subsequent wave until all waves are done.
 
-### Phase 4 — Finalize
+### Phase 4 — Update architecture log
+
+After all tasks are complete, append a tech stack entry to `constitutions/architecture.md` (create the file if it doesn't exist):
+- Format: `- <stack, DB changes, new dependencies> (SPEC-XXX)`
+- If no database or infrastructure changes: `- N/A (no infrastructure changes) (SPEC-XXX)`
+- This keeps the architecture constitution as a running log of what each spec introduced from a tech stack perspective
+
+### Phase 5 — Finalize
 
 1. Update spec status to `in-progress`
 2. Report a summary:

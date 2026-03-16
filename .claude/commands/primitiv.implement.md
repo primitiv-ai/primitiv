@@ -60,6 +60,12 @@ Optional spec ID: `$ARGUMENTS`
    - Update spec status to `completed` (when all tasks done)
    - Summarize what was implemented
 
+6. **Update architecture log:**
+   - Append a tech stack entry to `constitutions/architecture.md` (create the file if it doesn't exist)
+   - Format: `- <stack, DB changes, new dependencies> (SPEC-XXX)`
+   - If no database or infrastructure changes: `- N/A (no infrastructure changes) (SPEC-XXX)`
+   - This keeps the architecture constitution as a running log of what each spec introduced from a tech stack perspective
+
 ## Output
 - For each task: show what was implemented and files changed
 - Final summary: total tasks completed/skipped

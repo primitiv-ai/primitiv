@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- SpecKit-to-Primitiv migration command (`primitiv migrate speckit` / `/primitiv.migrate`) for brownfield projects adopting Primitiv
+  - Multi-strategy constitution parser (H2 header → keyword fuzzy → fallback) splits SpecKit constitution into product + development constitutions
+  - Per-spec tech stack re-referencing from SpecKit slugs to Primitiv spec IDs in architecture constitution
+  - Merge strategy for pre-existing `.primitiv/` directories; idempotent re-runs
+  - Sequential spec ID assignment with mapping table in migration report
+- `/primitiv.implement` appends per-spec tech stack entry to `constitutions/architecture.md` after each spec completion
 - GitNexus deep integration across all code-touching pipeline phases (plan, tasks, implement, test-feature, compushpr)
 - GitNexus knowledge graph indexing with 4 core skills (exploring, debugging, impact-analysis, refactoring)
 - GitNexus MCP tools referenced in pipeline commands with graceful fallback to manual search

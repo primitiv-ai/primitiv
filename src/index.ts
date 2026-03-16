@@ -7,6 +7,8 @@ export { FeatureRegistryManager } from "./engine/FeatureRegistryManager.js";
 export { AuditManager } from "./engine/AuditManager.js";
 export { ResearchManager } from "./engine/ResearchManager.js";
 export { ContractManager } from "./engine/ContractManager.js";
+export { MigrationManager } from "./engine/MigrationManager.js";
+export type { SpecMapping, MigrationReport, DetectionResult, ConstitutionSplitResult } from "./engine/MigrationManager.js";
 
 // Schemas
 export * from "./schemas/common.js";
@@ -18,6 +20,7 @@ export * from "./schemas/task.js";
 export * from "./schemas/testResults.js";
 export * from "./schemas/audit.js";
 export * from "./schemas/research.js";
+export * from "./schemas/speckit.js";
 
 // State machine
 export { canTransition, assertTransition, getNextStatuses, isTerminal } from "./state/specStateMachine.js";
@@ -34,4 +37,4 @@ export { createSpecBranch, isOnSpecBranch, getSpecIdFromBranch, detectDefaultBra
 
 // Utils
 export { parseDocument, serializeDocument } from "./utils/frontmatter.js";
-export { PrimitivError, GitNotFoundError, NotInitializedError, SpecNotFoundError } from "./utils/errors.js";
+export { PrimitivError, GitNotFoundError, NotInitializedError, SpecNotFoundError, MigrationNotFoundError } from "./utils/errors.js";

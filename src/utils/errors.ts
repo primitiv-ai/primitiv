@@ -41,6 +41,15 @@ export class InvalidTransitionError extends PrimitivError {
   }
 }
 
+export class MigrationNotFoundError extends PrimitivError {
+  constructor() {
+    super(
+      "No SpecKit project detected. Expected .specify/ directory and/or specs/ folder at the project root.",
+      "MIGRATION_NOT_FOUND"
+    );
+  }
+}
+
 export class GateValidationError extends PrimitivError {
   violations: string[];
 

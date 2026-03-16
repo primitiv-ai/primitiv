@@ -8,6 +8,7 @@ import { FeatureRegistryManager } from "./FeatureRegistryManager.js";
 import { AuditManager } from "./AuditManager.js";
 import { ResearchManager } from "./ResearchManager.js";
 import { ContractManager } from "./ContractManager.js";
+import { MigrationManager } from "./MigrationManager.js";
 import { validateGate } from "../validation/gateValidator.js";
 import { validateConstitution } from "../validation/constitutionValidator.js";
 import { validateSpecAlignment } from "../validation/specAlignment.js";
@@ -81,6 +82,11 @@ export class PrimitivEngine {
 
   getSpecGraph(specId: string) {
     return this.specs.getSpecGraph(specId);
+  }
+
+  // Migration
+  get migration(): MigrationManager {
+    return new MigrationManager(this.projectRoot);
   }
 
   // Full context
