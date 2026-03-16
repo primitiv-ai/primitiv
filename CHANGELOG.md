@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- `/primitiv.clarify` now uses `AskUserQuestion` tool for all clarifying questions — structured options, batching, previews, and forced wait instead of freeform text
+
 ### Added
 
 - SpecKit-to-Primitiv migration command (`primitiv migrate speckit` / `/primitiv.migrate`) for brownfield projects adopting Primitiv

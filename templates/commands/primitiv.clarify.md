@@ -28,17 +28,76 @@ Optional spec ID: `$ARGUMENTS`
    - Integration points that need clarification
    - Potential conflicts with gates or constitutions
 
-3. **Ask clarifying questions:**
-   - Present questions one at a time (or in small groups of 2-3)
-   - Wait for the user's response
-   - Each question should be specific and actionable
-   - Suggest reasonable defaults when possible: "Should X do Y? (I'd suggest yes because Z)"
+3. **Ask clarifying questions using `AskUserQuestion`:**
+
+   You MUST use the `AskUserQuestion` tool for **every** clarifying question. Do NOT ask questions as plain text in the conversation. Every question goes through the tool — no exceptions.
+
+   ### Formatting rules
+
+   - **`header`** — Short label (max 12 chars) displayed as a chip. Examples: `"Scope"`, `"Auth method"`, `"Data format"`, `"Error handling"`.
+   - **`options`** — 2 to 4 predefined choices. Each option needs:
+     - `label`: Concise choice text (1-5 words). If you recommend an option, place it **first** and append `"(Recommended)"` to its label.
+     - `description`: What this option means or what happens if chosen.
+   - **`multiSelect`** — Set to `true` when multiple answers can apply (e.g., "Which artifact types should be supported?"). Use `false` (default) for mutually exclusive choices.
+   - **`preview`** — Optional. Use when comparing concrete artifacts: code snippets, config formats, ASCII mockups, or architecture patterns. Do not use for simple preference questions.
+   - **"Other"** — An "Other" option with free-text input is **always available automatically**. You do not need to add it. Users who pick "Other" provide custom text — record it directly without asking for confirmation.
+
+   ### Batching rules
+
+   - Group **up to 4 related questions** in a single `AskUserQuestion` call.
+   - Keep **unrelated questions** in separate calls.
+   - Continue asking rounds until all ambiguities are resolved — there is no round limit.
+
+   ### Example
+
+   Here is a concrete example of an `AskUserQuestion` call for a clarification session:
+
+   ```json
+   {
+     "questions": [
+       {
+         "question": "How should the migration handle specs that already exist in the target directory?",
+         "header": "Merge",
+         "options": [
+           {
+             "label": "Skip existing (Recommended)",
+             "description": "If a spec already exists in .primitiv/, skip it and report it as already migrated."
+           },
+           {
+             "label": "Overwrite",
+             "description": "Replace existing specs with freshly migrated versions from SpecKit."
+           },
+           {
+             "label": "Merge content",
+             "description": "Attempt to merge new SpecKit content into existing Primitiv specs."
+           }
+         ],
+         "multiSelect": false
+       },
+       {
+         "question": "Which optional artifact types should be migrated?",
+         "header": "Artifacts",
+         "options": [
+           {
+             "label": "All artifacts (Recommended)",
+             "description": "Migrate research, data-model, quickstart, contracts, and checklists."
+           },
+           {
+             "label": "Core only",
+             "description": "Only migrate spec, plan, and tasks. Skip supplementary artifacts."
+           }
+         ],
+         "multiSelect": false
+       }
+     ]
+   }
+   ```
 
 4. **Record clarifications:**
-   - After each answer, append to `.primitiv/specs/SPEC-XXX-*/clarifications.md`:
+   - After each `AskUserQuestion` response, append each answered question to `.primitiv/specs/SPEC-XXX-*/clarifications.md`:
      ```markdown
-     ## Q: <question>
-     **A:** <user's answer>
+     ## Q: <question text>
+     **A:** <selected option label — or custom text if user picked "Other">
      **Impact:** <how this affects the spec>
      ```
 
