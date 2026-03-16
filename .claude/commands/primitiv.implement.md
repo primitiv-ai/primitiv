@@ -21,7 +21,16 @@ Optional spec ID: `$ARGUMENTS`
 
 2. **For each pending task:**
    a. Read the task details (description, files, acceptance criteria)
-   b. If GitNexus is available, use `gitnexus.context` to understand files before modifying them
+   b. **Before modifying files** — understand context and blast radius:
+
+      Use GitNexus MCP tools (if available):
+      - `gitnexus.context` — For each file/symbol you will modify, get 360-degree view: callers, callees, type info, and process participation. Understand what depends on the code you're changing.
+      - `gitnexus.impact` — Assess blast radius of the planned change to identify downstream effects and files that may need coordinated updates.
+
+      Fallback (if GitNexus not indexed):
+      - Use Glob/Grep to find imports and references to the code being modified
+      - Read dependent files to understand potential side effects
+
    c. Implement the code changes:
       - Create new files as specified
       - Modify existing files carefully
@@ -31,13 +40,22 @@ Optional spec ID: `$ARGUMENTS`
    e. Update the task status to `completed` in tasks.md
    f. Move to the next task
 
-3. **During implementation:**
+3. **After all tasks are complete — verify impact:**
+
+   Use GitNexus MCP tools (if available):
+   - `gitnexus.detect_changes` — Analyze the git diff to map all affected processes, symbols, and downstream dependencies. Verify no unintended side effects remain unaddressed.
+
+   Fallback (if GitNexus not indexed):
+   - Run `git diff --stat` to review all changed files
+   - Manually verify that related files were not missed
+
+4. **During implementation:**
    - Follow existing code patterns and conventions
    - Write tests if the dev constitution requires them
    - Don't break existing functionality
    - If a task is blocked, mark it as `skipped` with a reason and move on
 
-4. **When all tasks are done:**
+5. **When all tasks are done:**
    - Update spec status to `in-progress` (when starting first task)
    - Update spec status to `completed` (when all tasks done)
    - Summarize what was implemented

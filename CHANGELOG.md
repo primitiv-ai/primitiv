@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- GitNexus deep integration across all code-touching pipeline phases (plan, tasks, implement, test-feature, compushpr)
+- GitNexus knowledge graph indexing with 4 core skills (exploring, debugging, impact-analysis, refactoring)
+- GitNexus MCP tools referenced in pipeline commands with graceful fallback to manual search
+- Impact analysis section in PR descriptions via `detect_changes`
 - Audit trail module with NDJSON append-only logs per spec (`AuditManager`, `AuditRecordSchema`)
 - Research utilities module for research.md template creation, validation, and parsing (`ResearchManager`)
 - Contract utilities module for OpenAPI YAML file management in spec directories (`ContractManager`)

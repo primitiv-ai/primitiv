@@ -25,13 +25,15 @@ Optional spec ID: `$ARGUMENTS`
 Before planning ANY new code, search the existing codebase:
 
 1. **Use GitNexus MCP tools** (if available):
-   - `gitnexus.query` — Search for existing implementations related to the spec
-   - `gitnexus.context` — Get 360-degree analysis of relevant symbols/functions
-   - `gitnexus.impact` — Assess blast radius of planned changes
+   - `gitnexus.query` — Search for existing implementations related to the spec (e.g., query with feature keywords to find relevant execution flows and entry points)
+   - `gitnexus.context` — For each key symbol/function discovered, get a 360-degree view: callers, callees, type info, and process participation. Use this to understand what to reuse and what patterns are established.
+   - `gitnexus.impact` — For each file or symbol you plan to change, assess blast radius: what depends on it, what could break, and what must be considered in the plan
+   - `gitnexus://repo/{name}/clusters` resource — Review functional clusters to understand how the codebase is organized into logical areas
 
-2. **Fallback: Manual search** (if GitNexus not available):
-   - Search for related files, functions, and patterns
-   - Look for existing utilities, helpers, and shared code
+2. **Fallback: Manual search** (if GitNexus not indexed):
+   - Use Glob to find related files by name patterns
+   - Use Grep to search for function/class references and imports
+   - Read key files to understand existing utilities, helpers, and shared code
    - Understand the project structure and conventions
 
 3. **Document findings:**

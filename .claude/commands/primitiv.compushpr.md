@@ -33,7 +33,15 @@ Optional spec ID: `$ARGUMENTS`
 4. **Push:**
    - Run `git push -u origin <branch-name>`
 
-5. **Create PR:**
+5. **Impact analysis for PR description:**
+
+   Use GitNexus MCP tools (if available):
+   - `gitnexus.detect_changes` — Analyze the git diff to map all affected processes, symbols, and downstream dependencies. Summarize which functional areas of the codebase were impacted.
+
+   Fallback (if GitNexus not indexed):
+   - Use `git diff --stat` for a file-level change summary
+
+6. **Create PR:**
    - Use `gh pr create` with:
      - **Title:** Spec title (e.g., "Add user authentication")
      - **Body:** Summary format (NO checklist):
@@ -47,19 +55,22 @@ Optional spec ID: `$ARGUMENTS`
        ## Changes
        <bullet list of key changes from plan/tasks>
 
+       ## Impact Analysis
+       <affected functional areas and downstream dependencies from GitNexus detect_changes, or git diff --stat summary>
+
        ## Test Results
        <summary from test-results.md if available>
        ```
    - Do NOT include a review checklist — keep the PR clean
 
-6. **Squash merge:**
+7. **Squash merge:**
    - Run `gh pr merge --squash --delete-branch`
    - This merges to main and deletes the feature branch
 
-7. **Update spec status:**
+8. **Update spec status:**
    - Update spec status to `completed`
 
-8. **Report results:**
+9. **Report results:**
    - Show commit hash, PR URL, merge confirmation
 
 ## Output Format

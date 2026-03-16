@@ -20,7 +20,21 @@ Optional spec ID: `$ARGUMENTS`
    - Read `.primitiv/constitutions/architecture.md` for system boundaries
    - Identify the spec's `## Test Strategy` section for guidance
 
-2. **Determine test types needed:**
+2. **Discover test boundaries and related code:**
+
+   Use GitNexus MCP tools (if available):
+   - `gitnexus.query` — Search for existing tests related to the spec's domain to avoid duplicates and follow established test patterns
+   - `gitnexus.context` — For each function/symbol under test, discover all callers and callees to understand integration boundaries and what needs mocking vs real execution
+   - `gitnexus.impact` — Identify all code paths affected by the spec's changes to ensure tests cover the full blast radius, not just the directly modified code
+
+   Fallback (if GitNexus not indexed):
+   - Use Glob to find existing test files in the spec's domain
+   - Use Grep to find imports and references to the code under test
+   - Read related test files to understand existing patterns
+
+   Use these findings to: ensure tests cover all affected code paths, follow existing test patterns, and avoid duplicate test coverage.
+
+3. **Determine test types needed:**
    Based on the spec's acceptance criteria and test strategy, determine which test types apply:
 
    - **Unit tests** — For pure logic, utilities, transformations. Use the test framework specified in the dev constitution (e.g., Vitest, Jest, pytest).
@@ -34,18 +48,18 @@ Optional spec ID: `$ARGUMENTS`
      - `evaluate_script` — Assert DOM state, check values, verify behavior
      - `wait_for` — Wait for elements or network requests
 
-3. **Generate test files:**
+4. **Generate test files:**
    - Follow the project's existing test conventions (directory structure, naming, imports)
    - Each acceptance criterion should map to at least one test assertion
    - Place tests in the project's test directory (not in `.primitiv/`)
    - Name test files clearly: `<feature>.test.ts`, `<feature>.spec.ts`, etc.
 
-4. **Run tests:**
+5. **Run tests:**
    - For unit/integration/API tests: run the project's test command (from dev constitution or package.json)
    - For UI tests: execute the Chrome DevTools MCP sequence (navigate → interact → assert via screenshots and evaluate_script)
    - Capture results: total, passed, failed, skipped
 
-5. **Write test results:**
+6. **Write test results:**
    - Write results to `.primitiv/specs/SPEC-XXX-*/test-results.md` with frontmatter:
      ```yaml
      type: test-results
@@ -61,7 +75,7 @@ Optional spec ID: `$ARGUMENTS`
      ```
    - Include test details in the content body
 
-6. **Update spec status:**
+7. **Update spec status:**
    - If all tests pass: update spec status to `tested`
    - If any tests fail: keep status as `in-progress`, report failures
 
