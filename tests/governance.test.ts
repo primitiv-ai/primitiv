@@ -157,6 +157,118 @@ describe("GovernanceCompiler", () => {
     });
   });
 
+  // ─── constraints derivation ────────────────────────────────────────────────
+
+  describe("constraints derivation", () => {
+    it("COMPILER_VERSION is '1.1'", () => {
+      expect(COMPILER_VERSION).toBe("1.1");
+    });
+
+    it("isStale() returns true for a cached context with version '1.0'", () => {
+      writeAllGovernanceFiles(testDir);
+      const compiler = new GovernanceCompiler(testDir);
+      const staleCtx = { ...compiler.compile(), version: "1.0" };
+      expect(compiler.isStale(staleCtx)).toBe(true);
+    });
+
+    it("populates all four categories from full governance", () => {
+      writeAllGovernanceFiles(testDir);
+      const compiler = new GovernanceCompiler(testDir);
+      const ctx = compiler.compile();
+
+      expect(ctx.constraints.tech.map(c => c.rule)).toContain("TypeScript");
+      expect(ctx.constraints.tech.every(c => c.category === "tech")).toBe(true);
+
+      expect(ctx.constraints.code.map(c => c.rule)).toContain("SPEC IS TRUTH");
+      expect(ctx.constraints.code.every(c => c.category === "code")).toBe(true);
+
+      expect(ctx.constraints.architecture.map(c => c.rule)).toContain("modular-monolith");
+      expect(ctx.constraints.architecture.every(c => c.category === "architecture")).toBe(true);
+
+      const securityRules = ctx.constraints.security.map(c => c.rule);
+      expect(securityRules).toContain("OAuth2");
+      expect(securityRules).toContain("Encrypt at rest");
+      expect(securityRules).toContain("TLS");
+      expect(securityRules).toContain("A01:2021");
+      expect(ctx.constraints.security.every(c => c.category === "security")).toBe(true);
+    });
+
+    it("constraints.security is [] when security governance file is absent", () => {
+      writePrimitivFile(testDir, ["gates", "company-principles.md"], serializeDocument(companyData, "# Company"));
+      writePrimitivFile(testDir, ["constitutions", "product.md"], serializeDocument(productData, "# Product"));
+      writePrimitivFile(testDir, ["constitutions", "development.md"], serializeDocument(devData, "# Dev"));
+      writePrimitivFile(testDir, ["constitutions", "architecture.md"], serializeDocument(archData, "# Arch"));
+
+      const compiler = new GovernanceCompiler(testDir);
+      const ctx = compiler.compile();
+
+      expect(ctx.constraints.security).toEqual([]);
+      expect(ctx.constraints.tech.length).toBeGreaterThan(0);
+    });
+
+    it("all four categories are empty arrays when no governance files exist", () => {
+      const compiler = new GovernanceCompiler(testDir);
+      const ctx = compiler.compile();
+
+      expect(ctx.constraints.tech).toEqual([]);
+      expect(ctx.constraints.code).toEqual([]);
+      expect(ctx.constraints.architecture).toEqual([]);
+      expect(ctx.constraints.security).toEqual([]);
+    });
+
+    it("deduplicates rules that appear in multiple sources within a category", () => {
+      const devWithDup = {
+        ...devData,
+        agentRules: ["SPEC IS TRUTH", "Use TypeScript"],
+        conventions: { ...devData.conventions, codeStyle: ["SPEC IS TRUTH"] },
+      };
+      writePrimitivFile(testDir, ["constitutions", "development.md"], serializeDocument(devWithDup, "# Dev"));
+
+      const compiler = new GovernanceCompiler(testDir);
+      const ctx = compiler.compile();
+
+      const codeRules = ctx.constraints.code.map(c => c.rule);
+      const dupCount = codeRules.filter(r => r === "SPEC IS TRUTH").length;
+      expect(dupCount).toBe(1);
+    });
+
+    it("constraints are sorted alphabetically by rule within each category", () => {
+      const devWithMultiple = {
+        ...devData,
+        stack: { languages: ["TypeScript", "Go"], frameworks: ["Express"], databases: [], infrastructure: [] },
+        agentRules: ["Use zod", "Always test", "SPEC IS TRUTH"],
+      };
+      writePrimitivFile(testDir, ["constitutions", "development.md"], serializeDocument(devWithMultiple, "# Dev"));
+
+      const compiler = new GovernanceCompiler(testDir);
+      const ctx = compiler.compile();
+
+      const techRules = ctx.constraints.tech.map(c => c.rule);
+      expect(techRules).toEqual([...techRules].sort((a, b) => a.localeCompare(b)));
+
+      const codeRules = ctx.constraints.code.map(c => c.rule);
+      expect(codeRules).toEqual([...codeRules].sort((a, b) => a.localeCompare(b)));
+    });
+
+    it("constraint source field reflects the governance section it was derived from", () => {
+      writeAllGovernanceFiles(testDir);
+      const compiler = new GovernanceCompiler(testDir);
+      const ctx = compiler.compile();
+
+      const tsConstraint = ctx.constraints.tech.find(c => c.rule === "TypeScript");
+      expect(tsConstraint?.source).toBe("development.stack");
+
+      const agentRuleConstraint = ctx.constraints.code.find(c => c.rule === "SPEC IS TRUTH");
+      expect(agentRuleConstraint?.source).toBe("development.agentRules");
+
+      const archConstraint = ctx.constraints.architecture.find(c => c.rule === "modular-monolith");
+      expect(archConstraint?.source).toBe("architecture.patterns.style");
+
+      const secConstraint = ctx.constraints.security.find(c => c.rule === "OAuth2");
+      expect(secConstraint?.source).toBe("security.policies.authentication");
+    });
+  });
+
   // ─── isStale() ─────────────────────────────────────────────────────────────
 
   describe("isStale()", () => {

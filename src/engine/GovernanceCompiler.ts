@@ -4,11 +4,14 @@ import { join } from "node:path";
 import { GateManager } from "./GateManager.js";
 import { ConstitutionManager } from "./ConstitutionManager.js";
 import { GovernanceContextSchema } from "../schemas/governance.js";
-import type { GovernanceContext, CompilationWarning } from "../schemas/governance.js";
+import type { GovernanceContext, CompilationWarning, NormalizedConstraints, NormalizedConstraint } from "../schemas/governance.js";
+import type { DevConstitutionFrontmatter } from "../schemas/constitution.js";
+import type { ArchConstitutionFrontmatter } from "../schemas/constitution.js";
+import type { SecurityPrinciplesFrontmatter } from "../schemas/gates.js";
 import { getPrimitivRoot, writePrimitivFile } from "../utils/fileSystem.js";
 import { GovernanceCompilationError } from "../utils/errors.js";
 
-export const COMPILER_VERSION = "1.0";
+export const COMPILER_VERSION = "1.1";
 
 const CONTEXT_FILENAME = "governance-context.json";
 const PRIMITIV_GITIGNORE = ".gitignore";
@@ -69,6 +72,7 @@ export class GovernanceCompiler {
     );
 
     const sourceHash = this.computeSourceHash();
+    const constraints = this.deriveConstraints(development, architecture, security);
 
     return {
       version: COMPILER_VERSION,
@@ -79,6 +83,7 @@ export class GovernanceCompiler {
       product: product ?? null,
       development: development ?? null,
       architecture: architecture ?? null,
+      constraints,
       warnings,
     };
   }
@@ -137,6 +142,71 @@ export class GovernanceCompiler {
       const detail = err instanceof Error ? err.message : String(err);
       throw new GovernanceCompilationError(source, detail);
     }
+  }
+
+  private deriveConstraints(
+    development: DevConstitutionFrontmatter | null | undefined,
+    architecture: ArchConstitutionFrontmatter | null | undefined,
+    security: SecurityPrinciplesFrontmatter | null | undefined
+  ): NormalizedConstraints {
+    const raw: NormalizedConstraint[] = [];
+
+    if (development) {
+      const { languages, frameworks, databases, infrastructure } = development.stack;
+      for (const rule of [...languages, ...frameworks, ...databases, ...infrastructure]) {
+        raw.push({ category: "tech", rule, source: "development.stack" });
+      }
+      for (const rule of development.agentRules) {
+        raw.push({ category: "code", rule, source: "development.agentRules" });
+      }
+      for (const rule of development.conventions.codeStyle) {
+        raw.push({ category: "code", rule, source: "development.conventions.codeStyle" });
+      }
+    }
+
+    if (architecture) {
+      const { style, communication, dataFlow } = architecture.patterns;
+      if (style) raw.push({ category: "architecture", rule: style, source: "architecture.patterns.style" });
+      if (communication) raw.push({ category: "architecture", rule: communication, source: "architecture.patterns.communication" });
+      if (dataFlow) raw.push({ category: "architecture", rule: dataFlow, source: "architecture.patterns.dataFlow" });
+      for (const b of architecture.boundaries) {
+        raw.push({ category: "architecture", rule: b.name, source: "architecture.boundaries" });
+      }
+    }
+
+    if (security) {
+      for (const rule of security.policies.authentication) {
+        raw.push({ category: "security", rule, source: "security.policies.authentication" });
+      }
+      for (const rule of security.policies.dataHandling) {
+        raw.push({ category: "security", rule, source: "security.policies.dataHandling" });
+      }
+      for (const rule of security.policies.networking) {
+        raw.push({ category: "security", rule, source: "security.policies.networking" });
+      }
+      for (const rule of security.owaspAlignment) {
+        raw.push({ category: "security", rule, source: "security.owaspAlignment" });
+      }
+    }
+
+    // Deduplicate by rule within each category (keep first occurrence)
+    const seen = new Set<string>();
+    const deduped = raw.filter(c => {
+      const key = `${c.category}:${c.rule}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    // Sort: category alphabetically, then rule alphabetically within category
+    deduped.sort((a, b) => a.category.localeCompare(b.category) || a.rule.localeCompare(b.rule));
+
+    return {
+      tech: deduped.filter(c => c.category === "tech"),
+      code: deduped.filter(c => c.category === "code"),
+      architecture: deduped.filter(c => c.category === "architecture"),
+      security: deduped.filter(c => c.category === "security"),
+    };
   }
 
   private computeSourceHash(): string {

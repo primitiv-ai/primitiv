@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Normalized Constraints Layer: `GovernanceContext` extended with `constraints: NormalizedConstraints` field derived mechanically from all governance sections
+  - `NormalizedConstraint` objects carry `{ category, rule, source }` — verbatim rules from governance arrays, no LLM inference
+  - Four categories: `tech` (dev stack), `code` (agent rules + code style), `architecture` (patterns + boundaries), `security` (policies + OWASP)
+  - Constraints are deduplicated by rule string and deterministically sorted (category → rule alphabetically)
+  - `COMPILER_VERSION` bumped `"1.0"` → `"1.1"` — all cached contexts auto-recompile on next `primitiv compile` or pre-flight
+  - 8 new unit tests: full derivation, missing sections, all-absent, deduplication, ordering, source attribution, version bump staleness
 - Governance Compilation Layer: `primitiv compile` CLI command and `GovernanceCompiler` engine class that aggregates all governance inputs (gates + constitutions) into a single typed, cached `GovernanceContext` JSON
   - Compiles YAML frontmatter from all 5 governance files into a deterministic, SHA-256-hashed `governance-context.json`
   - Staleness detection via version check and source-file hash comparison — auto-recompiles when governance files change
