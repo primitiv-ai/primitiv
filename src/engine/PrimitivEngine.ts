@@ -9,12 +9,15 @@ import { AuditManager } from "./AuditManager.js";
 import { ResearchManager } from "./ResearchManager.js";
 import { ContractManager } from "./ContractManager.js";
 import { MigrationManager } from "./MigrationManager.js";
+import { GovernanceCompiler, ensureGovernanceContext } from "./GovernanceCompiler.js";
 import { validateGate } from "../validation/gateValidator.js";
 import { validateConstitution } from "../validation/constitutionValidator.js";
 import { validateSpecAlignment } from "../validation/specAlignment.js";
 import type { GateType, ConstitutionType, SpecStatus } from "../schemas/common.js";
 import type { ValidationResult } from "../validation/gateValidator.js";
 import type { AlignmentReport } from "../validation/specAlignment.js";
+import type { GovernanceContext } from "../schemas/governance.js";
+import type { EnsureGovernanceContextResult } from "./GovernanceCompiler.js";
 
 export class PrimitivEngine {
   public readonly gates: GateManager;
@@ -24,6 +27,7 @@ export class PrimitivEngine {
   public readonly audit: AuditManager;
   public readonly research: ResearchManager;
   public readonly contracts: ContractManager;
+  public readonly compiler: GovernanceCompiler;
 
   private constructor(public readonly projectRoot: string) {
     this.gates = new GateManager(projectRoot);
@@ -33,6 +37,7 @@ export class PrimitivEngine {
     this.audit = new AuditManager(projectRoot);
     this.research = new ResearchManager(projectRoot);
     this.contracts = new ContractManager(projectRoot);
+    this.compiler = new GovernanceCompiler(projectRoot);
     this.specs.setAuditManager(this.audit);
   }
 
@@ -82,6 +87,15 @@ export class PrimitivEngine {
 
   getSpecGraph(specId: string) {
     return this.specs.getSpecGraph(specId);
+  }
+
+  // Governance compilation
+  compile(): GovernanceContext {
+    return this.compiler.compile();
+  }
+
+  ensureGovernanceContext(): EnsureGovernanceContextResult {
+    return ensureGovernanceContext(this.projectRoot);
   }
 
   // Migration

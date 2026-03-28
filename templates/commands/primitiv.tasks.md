@@ -15,9 +15,20 @@ Optional spec ID: `$ARGUMENTS`
 ## Instructions
 
 1. **Load context:**
-   - Read the spec: `.primitiv/specs/SPEC-XXX-*/spec.md`
-   - Read the plan: `.primitiv/specs/SPEC-XXX-*/plan.md` (required — run `/primitiv.plan` first if missing)
-   - Read clarifications if any
+
+   #### Governance Context (pre-flight)
+   1. Check if `.primitiv/governance-context.json` exists
+      - **If YES**: Read it. Include the full JSON as a structured block in your working context:
+        ```
+        ## Governance Context
+        { <full governance-context.json contents> }
+        ```
+        Use this as the authoritative source for all governance rules — do not re-read individual markdown files.
+      - **If NO**: Warn: "`governance-context.json` not found — run `primitiv compile` for a consistent compiled context." Then fall back: read `.primitiv/gates/` and `.primitiv/constitutions/` markdown files directly.
+
+   2. Read the spec: `.primitiv/specs/SPEC-XXX-*/spec.md`
+   3. Read the plan: `.primitiv/specs/SPEC-XXX-*/plan.md` (required — run `/primitiv.plan` first if missing)
+   4. Read clarifications if any
 
 2. **Generate tasks:**
    - Each task must be **small** (implementable in a single focused session)

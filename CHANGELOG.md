@@ -6,11 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Governance Compilation Layer: `primitiv compile` CLI command and `GovernanceCompiler` engine class that aggregates all governance inputs (gates + constitutions) into a single typed, cached `GovernanceContext` JSON
+  - Compiles YAML frontmatter from all 5 governance files into a deterministic, SHA-256-hashed `governance-context.json`
+  - Staleness detection via version check and source-file hash comparison — auto-recompiles when governance files change
+  - `.primitiv/.gitignore` management: compiled context is automatically gitignored on first write (derived artifact)
+  - `ensureGovernanceContext()` pre-flight function for downstream pipeline commands
+  - `GovernanceCompiler` exposed on `PrimitivEngine` facade and exported from SDK
+  - `/primitiv.compile` slash command template
+  - Schema fixes: `operatingPrinciples` added to `CompanyPrinciplesFrontmatterSchema`; `modules` and `lifecycleStates` added to `ProductConstitutionFrontmatterSchema`
+  - 21 new unit tests covering compilation, staleness detection, gitignore management, and partial-governance handling
+- Governance context pre-flight injected into `/primitiv.plan`, `/primitiv.tasks`, and `/primitiv.implement` — downstream agents now receive the full compiled `GovernanceContext` JSON block instead of re-reading raw markdown files
+
 ### Changed
 
 - `/primitiv.clarify` now uses `AskUserQuestion` tool for all clarifying questions — structured options, batching, previews, and forced wait instead of freeform text
-
-### Added
 
 - SpecKit-to-Primitiv migration command (`primitiv migrate speckit` / `/primitiv.migrate`) for brownfield projects adopting Primitiv
   - Multi-strategy constitution parser (H2 header → keyword fuzzy → fallback) splits SpecKit constitution into product + development constitutions

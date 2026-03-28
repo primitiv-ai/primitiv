@@ -5,6 +5,7 @@ import { runValidate } from "./commands/validate.js";
 import { runStatus } from "./commands/status.js";
 import { runUpdate } from "./commands/update.js";
 import { runMigrate } from "./commands/migrate.js";
+import { runCompile } from "./commands/compile.js";
 
 export function createCli(): Command {
   const program = new Command();
@@ -51,6 +52,13 @@ export function createCli(): Command {
     .action(async (dir: string) => {
       const targetDir = resolve(dir);
       await runUpdate(targetDir);
+    });
+
+  program
+    .command("compile")
+    .description("Compile governance files into a structured context")
+    .action(async () => {
+      await runCompile(resolve("."));
     });
 
   const migrate = program

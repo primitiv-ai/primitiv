@@ -9,6 +9,11 @@ export const ProductConstitutionFrontmatterSchema = FrontmatterBaseSchema.extend
     targetUsers: z.array(z.string()).default([]),
     valueProposition: z.string().optional(),
   }),
+  modules: z.array(z.object({
+    name: z.string(),
+    description: z.string().optional(),
+  })).default([]),
+  lifecycleStates: z.array(z.string()).default([]),
   featureRegistry: z.array(z.object({
     id: z.string(),
     name: z.string(),

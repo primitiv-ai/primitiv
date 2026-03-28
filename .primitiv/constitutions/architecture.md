@@ -244,3 +244,4 @@ The Next.js application itself runs natively (not containerized) for fast HMR an
 - N/A (no infrastructure changes — pipeline command updates only) (SPEC-002)
 - N/A (no infrastructure changes — new MigrationManager module, CLI command, Zod schemas, slash command) (SPEC-003)
 - N/A (no infrastructure changes — template-only update to primitiv.clarify command) (SPEC-004)
+- N/A (no infrastructure changes — new GovernanceCompiler engine class, GovernanceContextSchema, primitiv compile CLI command, slash command template, downstream template updates; node:crypto built-in only) (SPEC-005)

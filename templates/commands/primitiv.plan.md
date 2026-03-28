@@ -15,11 +15,19 @@ Optional spec ID: `$ARGUMENTS`
 ## Instructions
 
 ### Step 1: Load Context
-- Read the spec: `.primitiv/specs/SPEC-XXX-*/spec.md`
-- Read clarifications (if any): `.primitiv/specs/SPEC-XXX-*/clarifications.md`
-- Read all gates and constitutions
-- Read the development constitution for stack/conventions
-- Read the architecture constitution for patterns/boundaries
+
+#### Governance Context (pre-flight)
+1. Check if `.primitiv/governance-context.json` exists
+   - **If YES**: Read it. This is the compiled GovernanceContext. Include the full JSON as a structured block in your working context:
+     ```
+     ## Governance Context
+     { <full governance-context.json contents> }
+     ```
+     Use this as the authoritative source for all governance rules — do not re-read individual markdown files.
+   - **If NO**: Warn: "`governance-context.json` not found — run `primitiv compile` for a consistent compiled context." Then fall back: read `.primitiv/gates/` and `.primitiv/constitutions/` markdown files directly.
+
+2. Read the spec: `.primitiv/specs/SPEC-XXX-*/spec.md`
+3. Read clarifications (if any): `.primitiv/specs/SPEC-XXX-*/clarifications.md`
 
 ### Step 2: Codebase Exploration (CRITICAL)
 Before planning ANY new code, search the existing codebase:

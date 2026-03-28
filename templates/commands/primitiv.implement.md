@@ -16,8 +16,17 @@ Optional spec ID: `$ARGUMENTS`
 
 ### Phase 1 — Load context
 
-1. Read the spec, plan, tasks, and clarifications
-2. Read all gates and constitutions for reference
+1. **Governance Context (pre-flight):**
+   Check if `.primitiv/governance-context.json` exists
+   - **If YES**: Read it. Include the full JSON as a structured block in your working context:
+     ```
+     ## Governance Context
+     { <full governance-context.json contents> }
+     ```
+     Use this as the authoritative source for all governance rules — do not re-read individual markdown files.
+   - **If NO**: Warn: "`governance-context.json` not found — run `primitiv compile` for a consistent compiled context." Then fall back: read `.primitiv/gates/` and `.primitiv/constitutions/` markdown files directly.
+
+2. Read the spec, plan, tasks, and clarifications
 3. Collect all `pending` tasks
 
 ### Phase 2 — Build dependency graph and compute waves
@@ -107,6 +116,11 @@ You are implementing a single task for spec {SPEC_ID}.
 - Files: {task.files}
 - Acceptance criteria:
 {task.acceptanceCriteria, each as a bullet}
+
+## Governance Context
+```json
+{full contents of .primitiv/governance-context.json — or summary of gates/constitutions if not compiled}
+```
 
 ## Project context
 - Dev constitution: {summary of dev conventions, stack, testing requirements}

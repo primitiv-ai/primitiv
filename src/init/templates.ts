@@ -25,6 +25,7 @@ export function getCommandTemplateNames(): string[] {
     "primitiv.constitution.md",
     "primitiv.specify.md",
     "primitiv.clarify.md",
+    "primitiv.compile.md",
     "primitiv.plan.md",
     "primitiv.tasks.md",
     "primitiv.implement.md",

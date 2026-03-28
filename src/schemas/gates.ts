@@ -17,6 +17,7 @@ export const CompanyPrinciplesFrontmatterSchema = FrontmatterBaseSchema.extend({
     priorities: z.array(z.string()).default([]),
     boundaries: z.array(z.string()).default([]),
   }).default({}),
+  operatingPrinciples: z.array(z.string()).default([]),
   updatedAt: TimestampSchema.optional(),
 });
 

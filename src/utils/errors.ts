@@ -61,3 +61,12 @@ export class GateValidationError extends PrimitivError {
     this.violations = violations;
   }
 }
+
+export class GovernanceCompilationError extends PrimitivError {
+  constructor(source: string, detail: string) {
+    super(
+      `Governance compilation failed for '${source}': ${detail}`,
+      "GOVERNANCE_COMPILATION_FAILED"
+    );
+  }
+}

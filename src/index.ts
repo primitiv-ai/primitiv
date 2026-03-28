@@ -9,11 +9,14 @@ export { ResearchManager } from "./engine/ResearchManager.js";
 export { ContractManager } from "./engine/ContractManager.js";
 export { MigrationManager } from "./engine/MigrationManager.js";
 export type { SpecMapping, MigrationReport, DetectionResult, ConstitutionSplitResult } from "./engine/MigrationManager.js";
+export { GovernanceCompiler, ensureGovernanceContext, COMPILER_VERSION } from "./engine/GovernanceCompiler.js";
+export type { EnsureGovernanceContextResult } from "./engine/GovernanceCompiler.js";
 
 // Schemas
 export * from "./schemas/common.js";
 export * from "./schemas/gates.js";
 export * from "./schemas/constitution.js";
+export * from "./schemas/governance.js";
 export * from "./schemas/spec.js";
 export * from "./schemas/plan.js";
 export * from "./schemas/task.js";
