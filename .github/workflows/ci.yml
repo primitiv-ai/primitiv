@@ -13,6 +13,10 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
+      - name: Configure git identity (needed by tests that run git commit)
+        run: |
+          git config --global user.email "ci@primitiv.dev"
+          git config --global user.name "Primitiv CI"
       - name: Type check
         run: npx tsc --noEmit
       - name: Test
