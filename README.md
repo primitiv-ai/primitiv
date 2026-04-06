@@ -1,4 +1,4 @@
-# Primitiv Spec Engine
+# Primitiv
 
 Spec Driven Development (SDD) engine for AI-assisted software development. A gated validation pipeline that ensures every feature goes through company principles, security review, and constitutional alignment before implementation.
 
@@ -29,15 +29,16 @@ primitiv init .
 ## Quick Start
 
 ```bash
-# Install
-npm install primitiv-spec-engine
+# Install globally + set up your project (interactive wizard)
+npx primitiv install
 
-# Initialize in a git repo
-primitiv init .                    # brownfield (default, analyzes existing code)
-primitiv init . --greenfield       # greenfield (empty templates)
+# Or if already installed globally:
+primitiv init                      # interactive wizard
+primitiv init --brownfield         # skip menu, analyze existing code
+primitiv init --greenfield         # skip menu, empty templates
 ```
 
-This creates `.primitiv/` (gates, constitutions, specs) and installs 10 slash commands into `.claude/commands/`.
+This creates `.primitiv/` (gates, constitutions, specs) and installs 12 slash commands into `.claude/commands/`.
 
 ## Slash Commands
 
@@ -75,7 +76,7 @@ primitiv update .                    # Update slash commands (preserves data)
 ## SDK
 
 ```typescript
-import { PrimitivEngine } from "primitiv-spec-engine";
+import { PrimitivEngine } from "primitiv";
 
 const engine = PrimitivEngine.load(".");
 

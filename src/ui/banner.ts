@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import chalk from "chalk";
@@ -17,7 +17,12 @@ const TAGLINE = "spec-driven development";
 export function getVersion(): string {
   try {
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    const pkgPath = resolve(__dirname, "..", "..", "package.json");
+    // From src/ui/banner.ts → ../../package.json (dev)
+    // From dist/src/ui/banner.js → ../../../package.json (published)
+    let pkgPath = resolve(__dirname, "..", "..", "package.json");
+    if (!existsSync(pkgPath)) {
+      pkgPath = resolve(__dirname, "..", "..", "..", "package.json");
+    }
     const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
     return pkg.version ?? "0.0.0";
   } catch {
