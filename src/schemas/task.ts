@@ -7,6 +7,7 @@ export const TaskItemSchema = z.object({
   description: z.string().optional(),
   status: z.enum(["pending", "in-progress", "completed", "skipped"]).default("pending"),
   files: z.array(z.string()).default([]),
+  /** References Gherkin scenario names from the spec. Format: "Feature: X > Scenario: Y" */
   acceptanceCriteria: z.array(z.string()).default([]),
   dependsOn: z.array(z.string()).default([]),
 });

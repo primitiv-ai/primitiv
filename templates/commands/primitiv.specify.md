@@ -59,7 +59,74 @@ The user's feature description: `$ARGUMENTS`
      createdAt: "<now ISO>"
      updatedAt: "<now ISO>"
      ```
-   - Write rich content: Description, Current Behavior, Proposed Changes, Acceptance Criteria (checkboxes), Test Strategy, Constraints, Out of Scope
+   - Write rich content with these sections:
+     - **Description** — What the feature does and why
+     - **Current Behavior** — What already exists (from codebase exploration)
+     - **Proposed Changes** — What will change
+     - **Acceptance Criteria** — **Mandatory Gherkin BDD format** (see below)
+     - **Test Strategy** — Which test types apply
+     - **Constraints** — Limitations and boundaries
+     - **Out of Scope** — What is explicitly excluded
+
+   **Acceptance Criteria format (mandatory Gherkin BDD):**
+
+   All acceptance criteria MUST use Gherkin syntax. No freeform checkboxes.
+
+   - Group criteria under `### Feature: <capability name>` headings
+   - Add a plain-English description paragraph under each Feature (do NOT use "As a...I want to...so that..." user stories)
+   - Write each test case as `#### Scenario: <descriptive name>` — the name becomes the test identifier
+   - Write steps as 2-space indented plain text under the Scenario heading:
+     - `Given` — precondition (arrange)
+     - `When` — action (act)
+     - `Then` — observable outcome (assert)
+     - `And` / `But` — continuation of the previous step type
+   - Every `Then` step MUST describe an observable, testable outcome
+   - Use `#### Scenario Outline:` with `<placeholder>` variables + `Examples:` table for parameterized cases
+   - Use `Background:` before scenarios when multiple scenarios in a Feature share the same `Given` steps
+   - No minimum complexity — 1 Feature with 1 Scenario is valid for simple specs
+
+   **Example:**
+   ```markdown
+   ## Acceptance Criteria
+
+   ### Feature: User Registration
+
+   Handles new user account creation with validation and confirmation.
+
+   #### Scenario: Successful registration with valid data
+     Given the user is on the registration page
+     And no account exists for "test@example.com"
+     When the user submits the form with valid name, email, and password
+     Then a new user account is created
+     And a confirmation email is sent to "test@example.com"
+     And the user is redirected to the dashboard
+
+   #### Scenario Outline: Registration rejects invalid input
+     Given the user is on the registration page
+     When the user submits the form with <field> set to <value>
+     Then the form displays an error: <error>
+
+     Examples:
+     | field    | value          | error                  |
+     | email    | not-an-email   | Invalid email format   |
+     | password | short          | Minimum 8 characters   |
+     | name     |                | Name is required       |
+
+   ### Feature: Email Confirmation
+
+   #### Background:
+     Given a user has registered with "test@example.com"
+     And a confirmation email has been sent
+
+   #### Scenario: Valid confirmation link
+     When the user clicks the confirmation link within 24 hours
+     Then the account status changes to "confirmed"
+
+   #### Scenario: Expired confirmation link
+     When the user clicks the confirmation link after 24 hours
+     Then the system shows "Link expired" and offers to resend
+   ```
+
    - Write to `.primitiv/specs/SPEC-XXX-<slug>/spec.md`
 
 6. **Run gate checks:**

@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Mandatory Gherkin BDD syntax for acceptance criteria in `/primitiv.specify` — Feature/Scenario/Given/When/Then replaces freeform checkboxes
+  - Concrete example in template: Scenario, Scenario Outline with Examples table, Background
+  - Plain-English Feature descriptions replace "As a...I want to...so that..." user stories
+- Gherkin-to-test mapping in `/primitiv.test-feature` — `describe(Feature) > describe(Scenario) > beforeEach(Given+When) > it(Then)` with `it.each` for Scenario Outlines
+  - Backward compatibility: checkbox-format specs from SPEC-001–006 still work
+  - Scenario-based coverage table in test-results.md
+- Gherkin scenario references in `/primitiv.plan` file change descriptions
+- Gherkin scenario references in `/primitiv.tasks` acceptanceCriteria field (`"Feature: X > Scenario: Y"` format)
+- JSDoc on `TaskItemSchema.acceptanceCriteria` documenting the Gherkin reference format
 - SPEC-005 spec for greenfield project bootstrap command (`/primitiv.bootstrap`) — archetype-aware, stack-agnostic scaffolding for the 0-to-1 journey
 - GitNexus codebase exploration step in `/primitiv.specify` — queries existing code before writing specs so acceptance criteria are grounded in reality
 - GitNexus re-indexing step in `/primitiv.compushpr` — refreshes the knowledge graph after squash merge so future specs have accurate data

@@ -45,7 +45,7 @@ Optional spec ID: `$ARGUMENTS`
    - `description`: What to implement
    - `status`: `pending`
    - `files`: List of files to create/modify
-   - `acceptanceCriteria`: List of checkable criteria
+   - `acceptanceCriteria`: List of Gherkin scenario references from the spec, using the format `"Feature: <name> > Scenario: <name>"` (e.g., `"Feature: User Registration > Scenario: Successful registration"`). For legacy specs with checkbox criteria, use the checkbox text verbatim.
 
 5. **Write tasks:**
    Write to `.primitiv/specs/SPEC-XXX-*/tasks.md` with frontmatter:
@@ -60,7 +60,7 @@ Optional spec ID: `$ARGUMENTS`
        status: pending
        files: ["src/...", "tests/..."]
        acceptanceCriteria:
-         - "..."
+         - "Feature: User Auth > Scenario: Login with valid credentials"
    updatedAt: "<now ISO>"
    ```
    Also write each task as a markdown section in the body for readability.

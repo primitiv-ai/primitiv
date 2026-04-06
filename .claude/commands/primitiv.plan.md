@@ -46,7 +46,7 @@ Before planning ANY new code, search the existing codebase:
 Create the implementation plan:
 1. **Approach**: High-level technical approach
 2. **Codebase Analysis**: What exists, what to reuse, what patterns to follow
-3. **File Changes**: List every file to create/modify/delete with descriptions
+3. **File Changes**: List every file to create/modify/delete with descriptions. For each file change, reference the Gherkin Feature and Scenario names from the spec's acceptance criteria that the change satisfies (e.g., `"— Feature: User Registration > Scenario: Successful registration"`)
 4. **Architecture**: How new code fits into the existing system
 5. **Risks**: What could go wrong
 6. **Dependencies**: External dependencies or blockers

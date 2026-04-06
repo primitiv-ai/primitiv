@@ -44,7 +44,7 @@ Optional spec ID: `$ARGUMENTS`
    - `description`: What to implement
    - `status`: `pending`
    - `files`: List of files to create/modify
-   - `acceptanceCriteria`: List of checkable criteria
+   - `acceptanceCriteria`: List of Gherkin scenario references from the spec, using the format `"Feature: <name> > Scenario: <name>"` (e.g., `"Feature: User Registration > Scenario: Successful registration"`). For legacy specs with checkbox criteria, use the checkbox text verbatim.
    - `dependsOn`: List of task IDs this task depends on (e.g., `["TASK-001"]`). Use `[]` for tasks with no dependencies.
 
 4. **Dependency rules:**
@@ -67,7 +67,7 @@ Optional spec ID: `$ARGUMENTS`
        status: pending
        files: ["src/...", "tests/..."]
        acceptanceCriteria:
-         - "..."
+         - "Feature: User Auth > Scenario: Login with valid credentials"
        dependsOn: []
      - id: TASK-002
        title: "..."
@@ -75,7 +75,7 @@ Optional spec ID: `$ARGUMENTS`
        status: pending
        files: ["src/other/..."]
        acceptanceCriteria:
-         - "..."
+         - "Feature: User Auth > Scenario: Session management"
        dependsOn: ["TASK-001"]
    updatedAt: "<now ISO>"
    ```
