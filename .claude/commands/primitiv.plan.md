@@ -15,25 +15,31 @@ Optional spec ID: `$ARGUMENTS`
 ## Instructions
 
 ### Step 1: Load Context
-- Read the spec: `.primitiv/specs/SPEC-XXX-*/spec.md`
-- Read clarifications (if any): `.primitiv/specs/SPEC-XXX-*/clarifications.md`
-- Read all gates and constitutions
-- Read the development constitution for stack/conventions
-- Read the architecture constitution for patterns/boundaries
+
+#### Governance Context (pre-flight)
+1. Check if `.primitiv/governance-context.json` exists
+   - **If YES**: Read it. This is the compiled GovernanceContext. Include the full JSON as a structured block in your working context:
+     ```
+     ## Governance Context
+     { <full governance-context.json contents> }
+     ```
+     Use this as the authoritative source for all governance rules — do not re-read individual markdown files.
+   - **If NO**: Warn: "`governance-context.json` not found — run `primitiv compile` for a consistent compiled context." Then fall back: read `.primitiv/gates/` and `.primitiv/constitutions/` markdown files directly.
+
+2. Read the spec: `.primitiv/specs/SPEC-XXX-*/spec.md`
+3. Read clarifications (if any): `.primitiv/specs/SPEC-XXX-*/clarifications.md`
 
 ### Step 2: Codebase Exploration (CRITICAL)
 Before planning ANY new code, search the existing codebase:
 
 1. **Use GitNexus MCP tools** (if available):
-   - `gitnexus.query` — Search for existing implementations related to the spec (e.g., query with feature keywords to find relevant execution flows and entry points)
-   - `gitnexus.context` — For each key symbol/function discovered, get a 360-degree view: callers, callees, type info, and process participation. Use this to understand what to reuse and what patterns are established.
-   - `gitnexus.impact` — For each file or symbol you plan to change, assess blast radius: what depends on it, what could break, and what must be considered in the plan
-   - `gitnexus://repo/{name}/clusters` resource — Review functional clusters to understand how the codebase is organized into logical areas
+   - `gitnexus.query` — Search for existing implementations related to the spec
+   - `gitnexus.context` — Get 360-degree analysis of relevant symbols/functions
+   - `gitnexus.impact` — Assess blast radius of planned changes
 
-2. **Fallback: Manual search** (if GitNexus not indexed):
-   - Use Glob to find related files by name patterns
-   - Use Grep to search for function/class references and imports
-   - Read key files to understand existing utilities, helpers, and shared code
+2. **Fallback: Manual search** (if GitNexus not available):
+   - Search for related files, functions, and patterns
+   - Look for existing utilities, helpers, and shared code
    - Understand the project structure and conventions
 
 3. **Document findings:**

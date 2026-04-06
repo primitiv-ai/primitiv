@@ -4,7 +4,7 @@ description: "Execute implementation tasks for the current spec"
 
 # Implement Tasks
 
-You are executing the **implementation tasks** for a specification.
+You are executing the **implementation tasks** for a specification, using **parallel execution** when possible.
 
 ## Input
 
@@ -14,59 +14,136 @@ Optional spec ID: `$ARGUMENTS`
 
 ## Instructions
 
-1. **Load context:**
-   - Read the spec, plan, tasks, and clarifications
-   - Read all gates and constitutions for reference
-   - Identify the next `pending` task
+### Phase 1 — Load context
 
-2. **For each pending task:**
-   a. Read the task details (description, files, acceptance criteria)
-   b. **Before modifying files** — understand context and blast radius:
+1. **Governance Context (pre-flight):**
+   Check if `.primitiv/governance-context.json` exists
+   - **If YES**: Read it. Include the full JSON as a structured block in your working context:
+     ```
+     ## Governance Context
+     { <full governance-context.json contents> }
+     ```
+     Use this as the authoritative source for all governance rules — do not re-read individual markdown files.
+   - **If NO**: Warn: "`governance-context.json` not found — run `primitiv compile` for a consistent compiled context." Then fall back: read `.primitiv/gates/` and `.primitiv/constitutions/` markdown files directly.
 
-      Use GitNexus MCP tools (if available):
-      - `gitnexus.context` — For each file/symbol you will modify, get 360-degree view: callers, callees, type info, and process participation. Understand what depends on the code you're changing.
-      - `gitnexus.impact` — Assess blast radius of the planned change to identify downstream effects and files that may need coordinated updates.
+2. Read the spec, plan, tasks, and clarifications
+3. Collect all `pending` tasks
 
-      Fallback (if GitNexus not indexed):
-      - Use Glob/Grep to find imports and references to the code being modified
-      - Read dependent files to understand potential side effects
+### Phase 2 — Build dependency graph and compute waves
 
-   c. Implement the code changes:
-      - Create new files as specified
-      - Modify existing files carefully
-      - Follow the development constitution's conventions
-      - Respect the architecture constitution's patterns
-   d. Verify acceptance criteria are met
-   e. Update the task status to `completed` in tasks.md
-   f. Move to the next task
+Using the `dependsOn` field on each task, compute execution **waves** (topological sort into parallel groups):
 
-3. **After all tasks are complete — verify impact:**
+- **Wave 0**: All tasks with `dependsOn: []` (no dependencies) — these run first, in parallel
+- **Wave 1**: Tasks whose dependencies are ALL in Wave 0
+- **Wave N**: Tasks whose dependencies are ALL in Waves 0 through N-1
 
-   Use GitNexus MCP tools (if available):
-   - `gitnexus.detect_changes` — Analyze the git diff to map all affected processes, symbols, and downstream dependencies. Verify no unintended side effects remain unaddressed.
+**File overlap safety check:** Within each wave, check if any two tasks share files in their `files` array. If they do, move one of the conflicting tasks to the next wave to prevent merge conflicts.
 
-   Fallback (if GitNexus not indexed):
-   - Run `git diff --stat` to review all changed files
-   - Manually verify that related files were not missed
+If any task has a `dependsOn` referencing a non-existent or `skipped` task, mark it as `skipped` with reason "dependency unavailable".
 
-4. **During implementation:**
-   - Follow existing code patterns and conventions
-   - Write tests if the dev constitution requires them
-   - Don't break existing functionality
-   - If a task is blocked, mark it as `skipped` with a reason and move on
+### Phase 3 — Execute waves
 
-5. **When all tasks are done:**
-   - Update spec status to `in-progress` (when starting first task)
-   - Update spec status to `completed` (when all tasks done)
-   - Summarize what was implemented
+For each wave, in order:
 
-6. **Update architecture log:**
-   - Append a tech stack entry to `constitutions/architecture.md` (create the file if it doesn't exist)
-   - Format: `- <stack, DB changes, new dependencies> (SPEC-XXX)`
-   - If no database or infrastructure changes: `- N/A (no infrastructure changes) (SPEC-XXX)`
-   - This keeps the architecture constitution as a running log of what each spec introduced from a tech stack perspective
+#### A) Single-task wave (1 task)
+
+Execute the task directly in the current working tree (no worktree overhead):
+
+1. Read the task details (description, files, acceptance criteria)
+2. If GitNexus is available, use `gitnexus.context` to understand files before modifying them
+3. Implement the code changes following dev and architecture constitutions
+4. Verify acceptance criteria are met
+5. Update the task status to `completed` in tasks.md
+6. Commit with message: `task(SPEC-XXX): TASK-YYY - <title>`
+
+#### B) Multi-task wave (2+ tasks)
+
+Spawn **parallel subagents**, each in an isolated git worktree:
+
+1. For each task in the wave, launch a subagent using the Agent tool with:
+   - `isolation: "worktree"` — gives each subagent its own branch + working copy
+   - `run_in_background: false` — wait for all to complete
+   - A focused prompt containing:
+     - The task ID, title, description, files, and acceptance criteria
+     - The spec ID and relevant context (constitutions, architecture patterns)
+     - A summary of what was implemented in prior waves (so the subagent understands the current state)
+     - Instruction to commit with message: `task(SPEC-XXX): TASK-YYY - <title>`
+
+   **Launch ALL subagents for the wave in a SINGLE message** (multiple Agent tool calls in one response) so they run concurrently.
+
+2. When all subagents complete, merge each worktree branch back to the current branch:
+   ```
+   git merge <worktree-branch> --no-edit
+   ```
+
+3. **If a merge conflict occurs:**
+   - First attempt: resolve the conflict manually by examining both sides and making the correct merge
+   - If the conflict is too complex: abort the merge (`git merge --abort`), then re-implement that task directly in the current working tree (sequential fallback)
+
+4. After all merges succeed, update each task's status to `completed` in tasks.md
+
+#### C) Move to the next wave
+
+Repeat Phase 3 for each subsequent wave until all waves are done.
+
+### Phase 4 — Update architecture log
+
+After all tasks are complete, append a tech stack entry to `constitutions/architecture.md` (create the file if it doesn't exist):
+- Format: `- <stack, DB changes, new dependencies> (SPEC-XXX)`
+- If no database or infrastructure changes: `- N/A (no infrastructure changes) (SPEC-XXX)`
+- This keeps the architecture constitution as a running log of what each spec introduced from a tech stack perspective
+
+### Phase 5 — Finalize
+
+1. Update spec status to `in-progress`
+2. Report a summary:
+   - Number of waves executed
+   - Tasks completed per wave (and which ran in parallel)
+   - Any conflicts resolved or tasks skipped
+3. Suggest running `/primitiv.test-feature` next
+
+## Subagent prompt template
+
+When spawning a worker subagent for a task, use this structure:
+
+```
+You are implementing a single task for spec {SPEC_ID}.
+
+## Task
+- ID: {task.id}
+- Title: {task.title}
+- Description: {task.description}
+- Files: {task.files}
+- Acceptance criteria:
+{task.acceptanceCriteria, each as a bullet}
+
+## Governance Context
+```json
+{full contents of .primitiv/governance-context.json — or summary of gates/constitutions if not compiled}
+```
+
+## Project context
+- Dev constitution: {summary of dev conventions, stack, testing requirements}
+- Architecture: {summary of architecture patterns}
+- Prior completed tasks: {list of task IDs + titles from previous waves}
+
+## Instructions
+1. Implement the changes described above
+2. Follow conventions from the dev constitution
+3. Respect architecture patterns
+4. Write tests if required by the dev constitution
+5. Do NOT break existing functionality
+6. Commit your changes with message: "task({SPEC_ID}): {task.id} - {task.title}"
+```
+
+## Edge cases
+
+- **No `dependsOn` fields on tasks (legacy tasks):** Fall back to sequential execution (treat each task as depending on the previous one)
+- **All tasks in one wave:** All are independent — launch all in parallel
+- **Single task total:** Execute directly, no orchestration overhead
+- **Circular dependencies:** If detected, report an error and fall back to sequential execution
 
 ## Output
-- For each task: show what was implemented and files changed
-- Final summary: total tasks completed/skipped
-- Remind that the branch is ready for review/merge
+- For each wave: show which tasks ran (parallel or sequential) and what was implemented
+- Final summary: total tasks completed/skipped, waves executed, parallelism achieved
+- Suggest next step: `/primitiv.test-feature` to generate and run tests

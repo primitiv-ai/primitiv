@@ -15,30 +15,29 @@ Optional spec ID: `$ARGUMENTS`
 ## Instructions
 
 1. **Load context:**
-   - Read the spec: `.primitiv/specs/SPEC-XXX-*/spec.md`
-   - Read the plan: `.primitiv/specs/SPEC-XXX-*/plan.md` (required — run `/primitiv.plan` first if missing)
-   - Read clarifications if any
 
-2. **Analyze file dependencies for task scoping:**
+   #### Governance Context (pre-flight)
+   1. Check if `.primitiv/governance-context.json` exists
+      - **If YES**: Read it. Include the full JSON as a structured block in your working context:
+        ```
+        ## Governance Context
+        { <full governance-context.json contents> }
+        ```
+        Use this as the authoritative source for all governance rules — do not re-read individual markdown files.
+      - **If NO**: Warn: "`governance-context.json` not found — run `primitiv compile` for a consistent compiled context." Then fall back: read `.primitiv/gates/` and `.primitiv/constitutions/` markdown files directly.
 
-   Use GitNexus MCP tools (if available):
-   - `gitnexus.impact` — For each file change listed in the plan, assess blast radius to identify tightly-coupled files that must be grouped into the same task
-   - `gitnexus.context` — Get 360-degree view of key symbols to understand which files share dependencies and should be modified together
+   2. Read the spec: `.primitiv/specs/SPEC-XXX-*/spec.md`
+   3. Read the plan: `.primitiv/specs/SPEC-XXX-*/plan.md` (required — run `/primitiv.plan` first if missing)
+   4. Read clarifications if any
 
-   Fallback (if GitNexus not indexed):
-   - Use Glob/Grep to find imports and references between planned files
-   - Read key files to understand coupling
-
-   Use these findings to: group tightly-coupled files into the same task, order tasks by dependency depth, and list all affected files per task.
-
-3. **Generate tasks:**
+2. **Generate tasks:**
    - Each task must be **small** (implementable in a single focused session)
    - Each task must be **independently verifiable** (has clear acceptance criteria)
    - Each task must reference **specific files** to create or modify
    - Order tasks by dependency (foundational tasks first)
    - Group related tasks logically
 
-4. **Task format:**
+3. **Task format:**
    For each task, define:
    - `id`: TASK-001, TASK-002, etc.
    - `title`: Clear, actionable title
@@ -46,6 +45,14 @@ Optional spec ID: `$ARGUMENTS`
    - `status`: `pending`
    - `files`: List of files to create/modify
    - `acceptanceCriteria`: List of Gherkin scenario references from the spec, using the format `"Feature: <name> > Scenario: <name>"` (e.g., `"Feature: User Registration > Scenario: Successful registration"`). For legacy specs with checkbox criteria, use the checkbox text verbatim.
+   - `dependsOn`: List of task IDs this task depends on (e.g., `["TASK-001"]`). Use `[]` for tasks with no dependencies.
+
+4. **Dependency rules:**
+   - A task that creates a base type/model used by others → other tasks `dependsOn` it
+   - A task that extends or integrates another task's output → `dependsOn` that task
+   - Tasks that touch completely separate files with no shared interfaces → `dependsOn: []` (can run in parallel)
+   - Avoid unnecessary dependencies — maximize parallelism by only adding dependencies where there is a real data or interface dependency
+   - Every task ID referenced in `dependsOn` must exist in the task list
 
 5. **Write tasks:**
    Write to `.primitiv/specs/SPEC-XXX-*/tasks.md` with frontmatter:
@@ -61,6 +68,15 @@ Optional spec ID: `$ARGUMENTS`
        files: ["src/...", "tests/..."]
        acceptanceCriteria:
          - "Feature: User Auth > Scenario: Login with valid credentials"
+       dependsOn: []
+     - id: TASK-002
+       title: "..."
+       description: "..."
+       status: pending
+       files: ["src/other/..."]
+       acceptanceCriteria:
+         - "Feature: User Auth > Scenario: Session management"
+       dependsOn: ["TASK-001"]
    updatedAt: "<now ISO>"
    ```
    Also write each task as a markdown section in the body for readability.
@@ -70,6 +86,7 @@ Optional spec ID: `$ARGUMENTS`
    - Update `updatedAt`
 
 ## Output
-- List all tasks with their IDs and titles
+- List all tasks with their IDs, titles, and dependencies
 - Show the total number of tasks
+- Show the parallelism structure: which tasks can run in parallel (same wave) vs. which must wait
 - Suggest running `/primitiv.implement` next

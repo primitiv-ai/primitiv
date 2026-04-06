@@ -5,8 +5,7 @@ import { GateManager } from "./GateManager.js";
 import { ConstitutionManager } from "./ConstitutionManager.js";
 import { GovernanceContextSchema } from "../schemas/governance.js";
 import type { GovernanceContext, CompilationWarning, NormalizedConstraints, NormalizedConstraint } from "../schemas/governance.js";
-import type { DevConstitutionFrontmatter } from "../schemas/constitution.js";
-import type { ArchConstitutionFrontmatter } from "../schemas/constitution.js";
+import type { DevConstitutionFrontmatter, ProductConstitutionFrontmatter, ArchConstitutionFrontmatter } from "../schemas/constitution.js";
 import type { SecurityPrinciplesFrontmatter } from "../schemas/gates.js";
 import { getPrimitivRoot, writePrimitivFile } from "../utils/fileSystem.js";
 import { GovernanceCompilationError } from "../utils/errors.js";
@@ -51,21 +50,21 @@ export class GovernanceCompiler {
     );
 
     const product = this.tryLoadSection(
-      () => this.constitutions.get("product").data,
+      () => this.constitutions.get("product").data as ProductConstitutionFrontmatter,
       "constitutions/product.md",
       "product",
       warnings
     );
 
     const development = this.tryLoadSection(
-      () => this.constitutions.get("dev").data,
+      () => this.constitutions.get("dev").data as DevConstitutionFrontmatter,
       "constitutions/development.md",
       "development",
       warnings
     );
 
     const architecture = this.tryLoadSection(
-      () => this.constitutions.get("architecture").data,
+      () => this.constitutions.get("architecture").data as ArchConstitutionFrontmatter,
       "constitutions/architecture.md",
       "architecture",
       warnings

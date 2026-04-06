@@ -8,6 +8,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **CLI Installer & Updater Wizard** — premium first-run experience via `npx primitiv install`
+  - `primitiv install` command: global npm install + interactive wizard with ASCII art banner, mode selection, animated progress
+  - `primitiv init` rewritten as interactive wizard with @clack/prompts (greenfield/brownfield menu, stack detection spinner, success box)
+  - `primitiv update` enhanced with command diff detection (updated/added/unchanged), compact banner, summary box
+  - `src/ui/` module: gradient ASCII art banner (`renderBanner`), compact banner (`renderCompactBanner`), bordered box panels (`renderBox`)
+  - Non-interactive mode (`--yes` flag) for CI/scripts
+- **npm Publishing** — package renamed from `primitiv-spec-engine` to `primitiv`, version bumped to 1.0.0
+  - MIT LICENSE file
+  - Complete package.json metadata (repository, keywords, engines)
+  - `npx primitiv install` works end-to-end without cloning
+- **CI/CD Pipeline** — GitHub Actions workflows
+  - `ci.yml`: TypeScript type check + Vitest on every push/PR to main
+  - `publish.yml`: automatic npm publish on GitHub Release via NPM_TOKEN secret
+- **TypeScript build fix** — GovernanceCompiler union type narrowing errors resolved, `tsc` exits 0
+- New dependencies: `@clack/prompts`, `gradient-string`
 - Mandatory Gherkin BDD syntax for acceptance criteria in `/primitiv.specify` — Feature/Scenario/Given/When/Then replaces freeform checkboxes
   - Concrete example in template: Scenario, Scenario Outline with Examples table, Background
   - Plain-English Feature descriptions replace "As a...I want to...so that..." user stories

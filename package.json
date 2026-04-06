@@ -1,12 +1,16 @@
 {
-  "name": "primitiv-spec-engine",
-  "version": "0.2.0",
+  "name": "primitiv",
+  "version": "1.0.0",
   "description": "Spec Driven Development engine for AI-assisted software development",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
     "primitiv": "dist/bin/primitiv.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/primitiv-ai/primitiv-spec-engine.git"
   },
   "scripts": {
     "build": "tsc",
@@ -26,18 +30,25 @@
     "ai",
     "claude",
     "codex",
-    "specifications"
+    "specifications",
+    "cli",
+    "bdd",
+    "developer-tools",
+    "governance"
   ],
   "author": "Primitiv",
   "license": "MIT",
   "dependencies": {
+    "@clack/prompts": "^0.9.1",
     "chalk": "^5.3.0",
     "cli-table3": "^0.6.5",
     "commander": "^12.1.0",
+    "gradient-string": "^3.0.0",
     "gray-matter": "^4.0.3",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/gradient-string": "^1.1.6",
     "@types/node": "^22.10.0",
     "eslint": "^9.15.0",
     "memfs": "^4.14.0",

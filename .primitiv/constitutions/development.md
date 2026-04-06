@@ -17,15 +17,15 @@ stack:
     - Docker Compose (local development)
 conventions:
   codeStyle:
-    - Strict TypeScript — `strict: true`, no `any`, no `@ts-ignore`
-    - ESLint with recommended + Next.js rules
-    - Prettier for formatting
-    - Named exports preferred over default exports
-    - Absolute imports via `@/` path alias
-    - Server Components by default; `"use client"` only when required
-    - Colocate code with its feature; shared code in `src/lib/`
-    - Zod schemas are the single source of truth for validation and types
-    - No silent failures — every error must be logged and surfaced
+    - "Strict TypeScript — strict: true, no any, no @ts-ignore"
+    - "ESLint with recommended + Next.js rules"
+    - "Prettier for formatting"
+    - "Named exports preferred over default exports"
+    - "Absolute imports via @/ path alias"
+    - "Server Components by default; 'use client' only when required"
+    - "Colocate code with its feature; shared code in src/lib/"
+    - "Zod schemas are the single source of truth for validation and types"
+    - "No silent failures — every error must be logged and surfaced"
   testing:
     - Test-Driven Development (TDD) is mandatory
     - Write tests BEFORE implementation

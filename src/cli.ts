@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import { resolve } from "node:path";
 import { runInit } from "./commands/init.js";
+import { runInstall } from "./commands/install.js";
 import { runValidate } from "./commands/validate.js";
 import { runStatus } from "./commands/status.js";
 import { runUpdate } from "./commands/update.js";
@@ -21,9 +22,18 @@ export function createCli(): Command {
     .argument("[dir]", "Target directory", ".")
     .option("--greenfield", "Initialize as a new project")
     .option("--brownfield", "Initialize with existing codebase analysis")
-    .action(async (dir: string, options: { greenfield?: boolean; brownfield?: boolean }) => {
+    .option("--yes", "Non-interactive mode (skip prompts, use defaults)")
+    .action(async (dir: string, options: { greenfield?: boolean; brownfield?: boolean; yes?: boolean }) => {
       const targetDir = resolve(dir);
       await runInit(targetDir, options);
+    });
+
+  program
+    .command("install")
+    .description("Install primitiv globally and initialize the current project")
+    .action(async () => {
+      const targetDir = resolve(".");
+      await runInstall(targetDir);
     });
 
   program
