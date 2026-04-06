@@ -70,8 +70,14 @@ Optional spec ID: `$ARGUMENTS`
 8. **Update spec status:**
    - Update spec status to `completed`
 
-9. **Report results:**
-   - Show commit hash, PR URL, merge confirmation
+9. **Re-index codebase (GitNexus):**
+   After the squash merge lands on main, the knowledge graph is stale. Re-index so future specs and plans have accurate data.
+   - Run `npx gitnexus analyze` in the project root
+   - If the index previously had embeddings (check `.gitnexus/meta.json` → `stats.embeddings > 0`), run `npx gitnexus analyze --embeddings` instead
+   - Report the updated symbol/process counts
+
+10. **Report results:**
+    - Show commit hash, PR URL, merge confirmation
 
 ## Output Format
 ```
@@ -82,6 +88,7 @@ Optional spec ID: `$ARGUMENTS`
 ✓ Squash merged to main
 ✓ Branch spec/SPEC-001-add-user-auth deleted
 ✓ Spec SPEC-001 status → completed
+✓ GitNexus re-indexed (3450 symbols, 260 processes)
 
 PR: https://github.com/org/repo/pull/42
 ```

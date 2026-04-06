@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- SPEC-005 spec for greenfield project bootstrap command (`/primitiv.bootstrap`) — archetype-aware, stack-agnostic scaffolding for the 0-to-1 journey
+- GitNexus codebase exploration step in `/primitiv.specify` — queries existing code before writing specs so acceptance criteria are grounded in reality
+- GitNexus re-indexing step in `/primitiv.compushpr` — refreshes the knowledge graph after squash merge so future specs have accurate data
+- "Current Behavior", "Proposed Changes", and "Test Strategy" sections to spec document template
 - Normalized Constraints Layer: `GovernanceContext` extended with `constraints: NormalizedConstraints` field derived mechanically from all governance sections
   - `NormalizedConstraint` objects carry `{ category, rule, source }` — verbatim rules from governance arrays, no LLM inference
   - Four categories: `tech` (dev stack), `code` (agent rules + code style), `architecture` (patterns + boundaries), `security` (policies + OWASP)

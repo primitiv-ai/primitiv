@@ -20,15 +20,32 @@ The user's feature description: `$ARGUMENTS`
    - Read `.primitiv/constitutions/architecture.md` (if exists)
    - Read `.primitiv/.state.json` to get the next spec ID
 
-2. **Generate spec ID:**
+2. **Explore existing codebase (GitNexus-powered):**
+   Before writing the spec, understand what already exists so the spec is grounded in reality.
+
+   **Use GitNexus MCP tools** (if available):
+   - `gitnexus_query({query: "<feature keywords>"})` — Find existing execution flows, entry points, and related code. This tells you what the codebase already has vs what needs to be built.
+   - `gitnexus_context({name: "<key symbol>"})` — For symbols discovered in the query, get callers/callees to understand integration points and existing patterns.
+   - `READ gitnexus://repo/{name}/clusters` — Review functional areas to understand where the new feature fits in the architecture.
+
+   **Fallback** (if GitNexus not indexed):
+   - Use Grep/Glob to search for related files and patterns
+   - Read key source files to understand existing implementations
+
+   **Document in the spec:**
+   - Add a "Current Behavior" section describing what already exists
+   - Reference specific files/functions that will be modified
+   - Note established patterns the implementation should follow
+
+3. **Generate spec ID:**
    - Read `.primitiv/.state.json`, get `nextSpecId`, format as `SPEC-XXX` (zero-padded to 3 digits)
    - Increment `nextSpecId` in `.state.json` and save
 
-3. **Create git branch:**
+4. **Create git branch:**
    - Create branch: `spec/SPEC-XXX-<slug>` (slug from title, lowercase, hyphens, max 50 chars)
    - Checkout the new branch
 
-4. **Generate the spec document:**
+5. **Generate the spec document:**
    - Parse the natural language description
    - Create structured spec with YAML frontmatter:
      ```yaml
@@ -42,17 +59,17 @@ The user's feature description: `$ARGUMENTS`
      createdAt: "<now ISO>"
      updatedAt: "<now ISO>"
      ```
-   - Write rich content: Description, Acceptance Criteria (checkboxes), Constraints, Out of Scope
+   - Write rich content: Description, Current Behavior, Proposed Changes, Acceptance Criteria (checkboxes), Test Strategy, Constraints, Out of Scope
    - Write to `.primitiv/specs/SPEC-XXX-<slug>/spec.md`
 
-5. **Run gate checks:**
+6. **Run gate checks:**
    - **Gate 1 (Company Principles):** Check if the spec aligns with company priorities and boundaries. If company principles exist, verify alignment. Report any violations.
    - **Gate 2 (Security Principles):** Check if the spec respects security policies. Flag any security concerns.
    - **Gate 3 (Constitutions):** Check product fit, dev stack compatibility, architecture alignment.
    - For each gate that passes, update the spec status: `draft → gate-1-passed → gate-2-passed → gate-3-passed`
    - If a gate has no principles/constitution defined yet, warn but don't block.
 
-6. **Report results:**
+7. **Report results:**
    - Show the spec ID and branch name
    - Show gate check results (pass/warn/fail for each)
    - Suggest next steps: `/primitiv.clarify` or `/primitiv.plan`
