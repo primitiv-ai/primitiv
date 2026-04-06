@@ -14,11 +14,12 @@
   },
   "scripts": {
     "build": "tsc",
+    "build:publish": "node esbuild.config.js",
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint src/",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build:publish"
   },
   "files": [
     "dist/",
@@ -50,6 +51,7 @@
   "devDependencies": {
     "@types/gradient-string": "^1.1.6",
     "@types/node": "^22.10.0",
+    "esbuild": "^0.28.0",
     "eslint": "^9.15.0",
     "memfs": "^4.14.0",
     "typescript": "^5.7.0",
