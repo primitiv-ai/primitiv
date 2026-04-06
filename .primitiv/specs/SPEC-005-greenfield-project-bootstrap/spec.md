@@ -2,7 +2,7 @@
 type: spec
 id: SPEC-005
 title: "Greenfield Project Bootstrap Command"
-status: gate-3-passed
+status: completed
 version: 3
 branch: "spec/SPEC-005-greenfield-project-bootstrap"
 author: "Dieu"
