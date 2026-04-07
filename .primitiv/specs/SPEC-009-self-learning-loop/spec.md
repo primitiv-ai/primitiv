@@ -2,7 +2,7 @@
 type: spec
 id: SPEC-009
 title: "Self-Learning Loop"
-status: tested
+status: completed
 version: 2
 branch: "spec/SPEC-009-self-learning-loop"
 author: "Dieu"
