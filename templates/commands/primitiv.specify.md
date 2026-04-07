@@ -20,6 +20,18 @@ The user's feature description: `$ARGUMENTS`
    - Read `.primitiv/constitutions/architecture.md` (if exists)
    - Read `.primitiv/.state.json` to get the next spec ID
 
+   **Relevant Learnings:**
+   - Read all `.primitiv/learnings/*.md` files (if the directory exists)
+   - Extract keywords from the current spec's title and description
+   - Match learning tags against these keywords (case-insensitive)
+   - If relevant learnings are found, display them in a "Relevant Learnings" section:
+     ```
+     Relevant Learnings:
+       ⚠ LEARN-001 (important): Always validate env vars at startup [validation, configuration]
+       ℹ LEARN-003 (info): Use semantic HTML for accessibility [ui, accessibility]
+     ```
+   - Use ⚠ for important/critical severity, ℹ for info
+
 2. **Explore existing codebase (GitNexus-powered):**
    Before writing the spec, understand what already exists so the spec is grounded in reality.
 

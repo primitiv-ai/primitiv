@@ -27,7 +27,20 @@ Optional spec ID: `$ARGUMENTS`
    - **If NO**: Warn: "`governance-context.json` not found — run `primitiv compile` for a consistent compiled context." Then fall back: read `.primitiv/gates/` and `.primitiv/constitutions/` markdown files directly.
 
 2. Read the spec, plan, tasks, and clarifications
-3. Collect all `pending` tasks
+
+3. **Relevant Learnings:**
+   - Read all `.primitiv/learnings/*.md` files (if the directory exists)
+   - Extract keywords from the current spec's title and description
+   - Match learning tags against these keywords (case-insensitive)
+   - If relevant learnings are found, display them in a "Relevant Learnings" section:
+     ```
+     Relevant Learnings:
+       ⚠ LEARN-001 (important): Always validate env vars at startup [validation, configuration]
+       ℹ LEARN-003 (info): Use semantic HTML for accessibility [ui, accessibility]
+     ```
+   - Use ⚠ for important/critical severity, ℹ for info
+
+4. Collect all `pending` tasks
 
 ### Phase 2 — Build dependency graph and compute waves
 

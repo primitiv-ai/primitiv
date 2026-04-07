@@ -5,6 +5,13 @@ import {
   DevConstitutionFrontmatterSchema,
   ArchConstitutionFrontmatterSchema,
 } from "./constitution.js";
+import { LearningFrontmatterSchema } from "./learning.js";
+
+// Define a schema for learnings in the governance context (includes description from markdown body)
+export const GovernanceContextLearningSchema = LearningFrontmatterSchema.extend({
+  description: z.string().default(""),
+});
+export type GovernanceContextLearning = z.infer<typeof GovernanceContextLearningSchema>;
 
 export const NormalizedConstraintSchema = z.object({
   category: z.enum(["tech", "code", "architecture", "security"]),
@@ -39,6 +46,7 @@ export const GovernanceContextSchema = z.object({
   development: DevConstitutionFrontmatterSchema.nullable(),
   architecture: ArchConstitutionFrontmatterSchema.nullable(),
   constraints: NormalizedConstraintsSchema,
+  learnings: z.array(GovernanceContextLearningSchema).default([]),
   warnings: z.array(CompilationWarningSchema),
 });
 

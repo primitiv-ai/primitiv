@@ -9,6 +9,7 @@ import { AuditManager } from "./AuditManager.js";
 import { ResearchManager } from "./ResearchManager.js";
 import { ContractManager } from "./ContractManager.js";
 import { MigrationManager } from "./MigrationManager.js";
+import { LearningManager } from "./LearningManager.js";
 import { GovernanceCompiler, ensureGovernanceContext } from "./GovernanceCompiler.js";
 import { validateGate } from "../validation/gateValidator.js";
 import { validateConstitution } from "../validation/constitutionValidator.js";
@@ -27,6 +28,7 @@ export class PrimitivEngine {
   public readonly audit: AuditManager;
   public readonly research: ResearchManager;
   public readonly contracts: ContractManager;
+  public readonly learnings: LearningManager;
   public readonly compiler: GovernanceCompiler;
 
   private constructor(public readonly projectRoot: string) {
@@ -37,6 +39,7 @@ export class PrimitivEngine {
     this.audit = new AuditManager(projectRoot);
     this.research = new ResearchManager(projectRoot);
     this.contracts = new ContractManager(projectRoot);
+    this.learnings = new LearningManager(projectRoot);
     this.compiler = new GovernanceCompiler(projectRoot);
     this.specs.setAuditManager(this.audit);
   }

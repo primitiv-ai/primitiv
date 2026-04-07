@@ -160,8 +160,8 @@ describe("GovernanceCompiler", () => {
   // ─── constraints derivation ────────────────────────────────────────────────
 
   describe("constraints derivation", () => {
-    it("COMPILER_VERSION is '1.1'", () => {
-      expect(COMPILER_VERSION).toBe("1.1");
+    it("COMPILER_VERSION is '1.2'", () => {
+      expect(COMPILER_VERSION).toBe("1.2");
     });
 
     it("isStale() returns true for a cached context with version '1.0'", () => {

@@ -4,6 +4,7 @@ import { join } from "node:path";
 interface StateFile {
   nextSpecId: number;
   nextFeatureId: number;
+  nextLearningId?: number;
   projectRoot: string;
   mode: "greenfield" | "brownfield";
   initializedAt: string;
@@ -46,6 +47,14 @@ export function nextFeatureId(projectRoot: string): string {
   const state = loadState(projectRoot);
   const id = `FEAT-${String(state.nextFeatureId).padStart(3, "0")}`;
   state.nextFeatureId++;
+  saveState(projectRoot, state);
+  return id;
+}
+
+export function nextLearningId(projectRoot: string): string {
+  const state = loadState(projectRoot);
+  const id = `LEARN-${String(state.nextLearningId ?? 1).padStart(3, "0")}`;
+  state.nextLearningId = (state.nextLearningId ?? 1) + 1;
   saveState(projectRoot, state);
   return id;
 }

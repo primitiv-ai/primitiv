@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **Self-Learning Loop** — built-in mechanism for capturing, storing, and surfacing project-level learnings across the Primitiv pipeline
+  - `LearningManager` engine class: create, list, search, delete, and findRelevant methods for learning records stored as markdown with YAML frontmatter in `.primitiv/learnings/`
+  - `LearningFrontmatterSchema` Zod schema with types: `best-practice`, `error-resolution`, `convention`; sources: `user`, `gate-failure`, `test-failure`, `clarification`, `review`; free-form tags; severity levels
+  - GovernanceCompiler integration: learnings compiled as flat `learnings[]` array in `GovernanceContext`, learnings directory included in source hash for cache invalidation, `COMPILER_VERSION` bumped to `"1.2"`
+  - `primitiv learn` CLI command with subcommands: `add`, `list`, `search`, `remove`
+  - `/primitiv.learn` slash command template for AI agents (record + review modes)
+  - Pipeline integration: relevant learnings surfaced in `/primitiv.specify`, `/primitiv.plan`, `/primitiv.implement`, `/primitiv.test-feature` via tag matching
+  - `ensurePrimitivDir` creates `.primitiv/learnings/` on init
+  - `nextLearningId` added to state file (backwards compatible)
+  - 66 new tests across 4 test files (schema validation, LearningManager CRUD, GovernanceCompiler integration, CLI commands, init integration)
 - **CLI Installer & Updater Wizard** — premium first-run experience via `npx primitiv install`
   - `primitiv install` command: global npm install + interactive wizard with ASCII art banner, mode selection, animated progress
   - `primitiv init` rewritten as interactive wizard with @clack/prompts (greenfield/brownfield menu, stack detection spinner, success box)

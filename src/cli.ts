@@ -7,6 +7,7 @@ import { runStatus } from "./commands/status.js";
 import { runUpdate } from "./commands/update.js";
 import { runMigrate } from "./commands/migrate.js";
 import { runCompile } from "./commands/compile.js";
+import { runLearnAdd, runLearnList, runLearnSearch, runLearnRemove } from "./commands/learn.js";
 
 export function createCli(): Command {
   const program = new Command();
@@ -69,6 +70,49 @@ export function createCli(): Command {
     .description("Compile governance files into a structured context")
     .action(async () => {
       await runCompile(resolve("."));
+    });
+
+  const learn = program
+    .command("learn")
+    .description("Manage project learnings");
+
+  learn
+    .command("add")
+    .description("Record a new learning")
+    .requiredOption("--type <type>", "best-practice | error-resolution | convention")
+    .requiredOption("--title <title>", "Learning title")
+    .option("--description <desc>", "Detailed description")
+    .option("--tags <tags>", "Comma-separated tags")
+    .option("--severity <level>", "info | important | critical", "info")
+    .option("--spec <specId>", "Link to originating spec")
+    .option("--source <source>", "user | gate-failure | test-failure | clarification | review", "user")
+    .action(async (options: { type: string; title: string; description?: string; tags?: string; severity?: string; spec?: string; source?: string }) => {
+      await runLearnAdd(resolve("."), options);
+    });
+
+  learn
+    .command("list")
+    .description("List all learnings")
+    .option("--type <type>", "Filter by type")
+    .option("--tag <tag>", "Filter by tag")
+    .action(async (options: { type?: string; tag?: string }) => {
+      await runLearnList(resolve("."), options);
+    });
+
+  learn
+    .command("search")
+    .description("Search learnings by keyword")
+    .argument("<query>", "Search keyword")
+    .action(async (query: string) => {
+      await runLearnSearch(resolve("."), query);
+    });
+
+  learn
+    .command("remove")
+    .description("Remove a learning by ID")
+    .argument("<id>", "Learning ID (e.g., LEARN-001)")
+    .action(async (id: string) => {
+      await runLearnRemove(resolve("."), id);
     });
 
   const migrate = program

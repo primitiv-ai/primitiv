@@ -11,6 +11,8 @@ export { MigrationManager } from "./engine/MigrationManager.js";
 export type { SpecMapping, MigrationReport, DetectionResult, ConstitutionSplitResult } from "./engine/MigrationManager.js";
 export { GovernanceCompiler, ensureGovernanceContext, COMPILER_VERSION } from "./engine/GovernanceCompiler.js";
 export type { EnsureGovernanceContextResult } from "./engine/GovernanceCompiler.js";
+export { LearningManager } from "./engine/LearningManager.js";
+export type { LearningRecord, CreateLearningOptions, ListLearningFilter } from "./engine/LearningManager.js";
 
 // Schemas
 export * from "./schemas/common.js";
@@ -24,6 +26,7 @@ export * from "./schemas/testResults.js";
 export * from "./schemas/audit.js";
 export * from "./schemas/research.js";
 export * from "./schemas/speckit.js";
+export * from "./schemas/learning.js";
 
 // State machine
 export { canTransition, assertTransition, getNextStatuses, isTerminal } from "./state/specStateMachine.js";

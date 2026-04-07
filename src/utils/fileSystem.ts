@@ -14,6 +14,7 @@ export function ensurePrimitivDir(projectRoot: string): void {
     join(root, "gates"),
     join(root, "constitutions"),
     join(root, "specs"),
+    join(root, "learnings"),
   ];
   for (const dir of dirs) {
     if (!existsSync(dir)) {

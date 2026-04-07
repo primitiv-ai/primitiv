@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { GateManager } from "./GateManager.js";
 import { ConstitutionManager } from "./ConstitutionManager.js";
@@ -8,9 +8,10 @@ import type { GovernanceContext, CompilationWarning, NormalizedConstraints, Norm
 import type { DevConstitutionFrontmatter, ProductConstitutionFrontmatter, ArchConstitutionFrontmatter } from "../schemas/constitution.js";
 import type { SecurityPrinciplesFrontmatter } from "../schemas/gates.js";
 import { getPrimitivRoot, writePrimitivFile } from "../utils/fileSystem.js";
+import { LearningManager } from "./LearningManager.js";
 import { GovernanceCompilationError } from "../utils/errors.js";
 
-export const COMPILER_VERSION = "1.1";
+export const COMPILER_VERSION = "1.2";
 
 const CONTEXT_FILENAME = "governance-context.json";
 const PRIMITIV_GITIGNORE = ".gitignore";
@@ -73,6 +74,13 @@ export class GovernanceCompiler {
     const sourceHash = this.computeSourceHash();
     const constraints = this.deriveConstraints(development, architecture, security);
 
+    const learningManager = new LearningManager(this.projectRoot);
+    const learningRecords = learningManager.list();
+    const learnings = learningRecords.map(r => ({
+      ...r.data,
+      description: r.description,
+    }));
+
     return {
       version: COMPILER_VERSION,
       compiledAt: new Date().toISOString(),
@@ -83,6 +91,7 @@ export class GovernanceCompiler {
       development: development ?? null,
       architecture: architecture ?? null,
       constraints,
+      learnings,
       warnings,
     };
   }
@@ -217,6 +226,16 @@ export class GovernanceCompiler {
       if (existsSync(fullPath)) {
         const content = readFileSync(fullPath, "utf-8");
         hash.update(relPath);
+        hash.update(content);
+      }
+    }
+
+    const learningsDir = join(primitiveRoot, "learnings");
+    if (existsSync(learningsDir)) {
+      const learningFiles = readdirSync(learningsDir).filter(f => f.endsWith(".md")).sort();
+      for (const file of learningFiles) {
+        const content = readFileSync(join(learningsDir, file), "utf-8");
+        hash.update(`learnings/${file}`);
         hash.update(content);
       }
     }

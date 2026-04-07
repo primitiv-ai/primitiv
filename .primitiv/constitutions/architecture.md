@@ -248,3 +248,4 @@ The Next.js application itself runs natively (not containerized) for fast HMR an
 - N/A (no infrastructure changes — NormalizedConstraints schemas added to GovernanceContextSchema, deriveConstraints() method added to GovernanceCompiler, COMPILER_VERSION bumped to 1.1) (SPEC-006)
 - N/A (no infrastructure changes — Gherkin BDD format in specify/plan/tasks/test-feature command templates, JSDoc on TaskItemSchema.acceptanceCriteria) (SPEC-007)
 - @clack/prompts + gradient-string added; new src/ui/ module, install command, CI/CD workflows (.github/workflows/); GovernanceCompiler TS fix; package renamed primitiv v1.0.0 (SPEC-008)
+- N/A (no infrastructure changes — new LearningManager engine class, LearningFrontmatterSchema, learnings[] in GovernanceContext, primitiv learn CLI command, /primitiv.learn slash command, COMPILER_VERSION bumped to 1.2, learnings/ directory added to init) (SPEC-009)
