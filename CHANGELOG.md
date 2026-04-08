@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **Per-Project Upgrade Command** — `primitiv upgrade` replaces `primitiv update` with full project upgrade capabilities
+  - Syncs `.primitiv/` directory structure (creates missing directories like `learnings/` for older projects)
+  - Migrates state file (adds missing fields like `nextLearningId`, `primitivVersion` with safe defaults)
+  - Updates slash commands with change detection (reports updated/added/unchanged)
+  - Updates MCP config (ensures GitNexus is present)
+  - Version tracking: `primitivVersion` field in `.state.json`, set on init and upgrade
+  - `getPackageVersion()` utility reads version from package.json at runtime (fixes hardcoded `--version`)
+  - Reports version transition ("Upgrading from X → Y") or "Already up to date"
+  - 10 new integration tests
 - **Self-Learning Loop** — built-in mechanism for capturing, storing, and surfacing project-level learnings across the Primitiv pipeline
   - `LearningManager` engine class: create, list, search, delete, and findRelevant methods for learning records stored as markdown with YAML frontmatter in `.primitiv/learnings/`
   - `LearningFrontmatterSchema` Zod schema with types: `best-practice`, `error-resolution`, `convention`; sources: `user`, `gate-failure`, `test-failure`, `clarification`, `review`; free-form tags; severity levels
@@ -64,6 +73,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Governance context pre-flight injected into `/primitiv.plan`, `/primitiv.tasks`, and `/primitiv.implement` — downstream agents now receive the full compiled `GovernanceContext` JSON block instead of re-reading raw markdown files
 
 ### Changed
+
+- **`primitiv update` removed** — replaced entirely by `primitiv upgrade` which does everything `update` did plus directory sync and state migration
 
 - `/primitiv.clarify` now uses `AskUserQuestion` tool for all clarifying questions — structured options, batching, previews, and forced wait instead of freeform text
 

@@ -4,7 +4,8 @@ import { runInit } from "./commands/init.js";
 import { runInstall } from "./commands/install.js";
 import { runValidate } from "./commands/validate.js";
 import { runStatus } from "./commands/status.js";
-import { runUpdate } from "./commands/update.js";
+import { runUpgrade } from "./commands/upgrade.js";
+import { getPackageVersion } from "./utils/version.js";
 import { runMigrate } from "./commands/migrate.js";
 import { runCompile } from "./commands/compile.js";
 import { runLearnAdd, runLearnList, runLearnSearch, runLearnRemove } from "./commands/learn.js";
@@ -15,7 +16,7 @@ export function createCli(): Command {
   program
     .name("primitiv")
     .description("Spec Driven Development engine for AI-assisted software development")
-    .version("0.2.0");
+    .version(getPackageVersion());
 
   program
     .command("init")
@@ -57,12 +58,10 @@ export function createCli(): Command {
     });
 
   program
-    .command("update")
-    .description("Update slash commands and MCP config (preserves all data)")
-    .argument("[dir]", "Target directory", ".")
-    .action(async (dir: string) => {
-      const targetDir = resolve(dir);
-      await runUpdate(targetDir);
+    .command("upgrade")
+    .description("Upgrade Primitiv in the current project (syncs directories, commands, and config)")
+    .action(async () => {
+      await runUpgrade(resolve("."));
     });
 
   program

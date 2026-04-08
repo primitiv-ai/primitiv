@@ -5,6 +5,7 @@ interface StateFile {
   nextSpecId: number;
   nextFeatureId: number;
   nextLearningId?: number;
+  primitivVersion?: string;
   projectRoot: string;
   mode: "greenfield" | "brownfield";
   initializedAt: string;

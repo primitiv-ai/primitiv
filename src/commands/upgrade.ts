@@ -7,8 +7,10 @@ import { loadTemplate, getCommandTemplateNames } from "../init/templates.js";
 import { installSlashCommands } from "../init/installCommands.js";
 import { installGitNexusMcp } from "../init/installGitNexus.js";
 import { assertGitRepo } from "../git/gitGuard.js";
-import { isPrimitivInitialized } from "../utils/fileSystem.js";
+import { isPrimitivInitialized, ensurePrimitivDir } from "../utils/fileSystem.js";
 import { NotInitializedError } from "../utils/errors.js";
+import { loadState, saveState } from "../utils/ids.js";
+import { getPackageVersion } from "../utils/version.js";
 
 interface CommandDiff {
   updated: string[];
@@ -39,7 +41,7 @@ function detectChanges(projectRoot: string): CommandDiff {
   return result;
 }
 
-export async function runUpdate(targetDir: string): Promise<void> {
+export async function runUpgrade(targetDir: string): Promise<void> {
   console.log(renderCompactBanner());
 
   assertGitRepo(targetDir);
@@ -48,14 +50,39 @@ export async function runUpdate(targetDir: string): Promise<void> {
     throw new NotInitializedError();
   }
 
-  // Detect changes before overwriting
+  const currentVersion = getPackageVersion();
+  const state = loadState(targetDir);
+  const previousVersion = state.primitivVersion ?? null;
+
+  // Version transition reporting
+  if (previousVersion && previousVersion === currentVersion) {
+    p.log.info(`Already up to date (v${currentVersion})`);
+  } else if (previousVersion) {
+    p.log.info(`Upgrading from ${previousVersion} → ${currentVersion}`);
+  } else {
+    p.log.info(`Upgrading to v${currentVersion}`);
+  }
+
+  // 1. Sync directory structure (creates any missing dirs)
+  ensurePrimitivDir(targetDir);
+
+  // 2. Migrate state file — add missing fields with defaults
+  if (state.nextLearningId === undefined) {
+    state.nextLearningId = 1;
+  }
+  state.primitivVersion = currentVersion;
+
+  // 3. Detect command changes before overwriting
   const diff = detectChanges(targetDir);
 
-  // Install all commands (always overwrites)
+  // 4. Install all commands (always overwrites)
   installSlashCommands(targetDir);
   installGitNexusMcp(targetDir);
 
-  // Build summary
+  // 5. Save migrated state
+  saveState(targetDir, state);
+
+  // 6. Build summary
   const lines: string[] = [];
 
   if (diff.updated.length > 0) {
@@ -75,7 +102,6 @@ export async function runUpdate(targetDir: string): Promise<void> {
   );
 
   const summary = lines.join("\n");
-
-  console.log(renderBox({ title: "Update Summary", content: summary }));
+  console.log(renderBox({ title: "Upgrade Summary", content: summary }));
   p.log.success("GitNexus MCP configuration verified");
 }

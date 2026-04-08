@@ -44,3 +44,4 @@ export { createSpecBranch, isOnSpecBranch, getSpecIdFromBranch, detectDefaultBra
 // Utils
 export { parseDocument, serializeDocument } from "./utils/frontmatter.js";
 export { PrimitivError, GitNotFoundError, NotInitializedError, SpecNotFoundError, MigrationNotFoundError } from "./utils/errors.js";
+export { getPackageVersion } from "./utils/version.js";

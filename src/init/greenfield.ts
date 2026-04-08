@@ -1,5 +1,6 @@
 import { ensurePrimitivDir, writePrimitivFile } from "../utils/fileSystem.js";
 import { saveState } from "../utils/ids.js";
+import { getPackageVersion } from "../utils/version.js";
 import { installSlashCommands } from "./installCommands.js";
 import { installGitNexusMcp } from "./installGitNexus.js";
 import { loadTemplate } from "./templates.js";
@@ -21,6 +22,7 @@ export function initGreenfield(projectRoot: string): InitResult {
     nextFeatureId: 1,
     projectRoot,
     mode: "greenfield",
+    primitivVersion: getPackageVersion(),
     initializedAt: new Date().toISOString(),
   });
 
