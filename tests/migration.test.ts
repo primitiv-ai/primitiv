@@ -402,7 +402,7 @@ describe("MigrationManager", () => {
       saveState(testDir, {
         nextSpecId: 1,
         nextFeatureId: 1,
-        projectRoot: testDir,
+
         mode: "greenfield",
         initializedAt: new Date().toISOString(),
       });
@@ -431,7 +431,7 @@ describe("MigrationManager", () => {
       saveState(testDir, {
         nextSpecId: 1,
         nextFeatureId: 1,
-        projectRoot: testDir,
+
         mode: "greenfield",
         initializedAt: new Date().toISOString(),
       });
@@ -522,7 +522,7 @@ describe("MigrationManager", () => {
       saveState(testDir, {
         nextSpecId: 1,
         nextFeatureId: 5,
-        projectRoot: testDir,
+
         mode: "greenfield",
         initializedAt: "2026-01-01T00:00:00Z",
       });
@@ -542,7 +542,7 @@ describe("MigrationManager", () => {
       saveState(testDir, {
         nextSpecId: 20,
         nextFeatureId: 1,
-        projectRoot: testDir,
+
         mode: "greenfield",
         initializedAt: "2026-01-01T00:00:00Z",
       });

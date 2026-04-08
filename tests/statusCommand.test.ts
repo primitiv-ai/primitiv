@@ -20,7 +20,7 @@ describe("Status command logic", () => {
     saveState(dir, {
       nextSpecId: 1,
       nextFeatureId: 1,
-      projectRoot: dir,
+
       mode: "greenfield",
       initializedAt: new Date().toISOString(),
     });

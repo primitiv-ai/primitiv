@@ -91,7 +91,6 @@ describe("primitiv upgrade", () => {
       writeState(testDir, {
         nextSpecId: 3,
         nextFeatureId: 1,
-        projectRoot: testDir,
         mode: "brownfield",
         initializedAt: "2026-01-01T00:00:00Z",
       });
@@ -108,7 +107,7 @@ describe("primitiv upgrade", () => {
       writeFileSync(join(testDir, ".primitiv", "specs", "test.md"), "keep me");
       writeState(testDir, {
         nextSpecId: 1, nextFeatureId: 1,
-        projectRoot: testDir, mode: "brownfield",
+        mode: "brownfield",
         initializedAt: "2026-01-01T00:00:00Z",
       });
 
@@ -124,7 +123,6 @@ describe("primitiv upgrade", () => {
       writeState(testDir, {
         nextSpecId: 5,
         nextFeatureId: 2,
-        projectRoot: testDir,
         mode: "brownfield",
         initializedAt: "2026-01-01T00:00:00Z",
       });
@@ -145,7 +143,7 @@ describe("primitiv upgrade", () => {
       mkdirSync(join(testDir, ".primitiv"), { recursive: true });
       writeState(testDir, {
         nextSpecId: 1, nextFeatureId: 1,
-        projectRoot: testDir, mode: "brownfield",
+        mode: "brownfield",
         initializedAt: "2026-01-01T00:00:00Z",
       });
 
@@ -164,7 +162,7 @@ describe("primitiv upgrade", () => {
       mkdirSync(join(testDir, ".primitiv"), { recursive: true });
       writeState(testDir, {
         nextSpecId: 1, nextFeatureId: 1,
-        projectRoot: testDir, mode: "brownfield",
+        mode: "brownfield",
         initializedAt: "2026-01-01T00:00:00Z",
       });
 
@@ -187,7 +185,7 @@ describe("primitiv upgrade", () => {
       writeState(testDir, {
         nextSpecId: 1, nextFeatureId: 1,
         primitivVersion: "1.0.2",
-        projectRoot: testDir, mode: "brownfield",
+        mode: "brownfield",
         initializedAt: "2026-01-01T00:00:00Z",
       });
 
@@ -204,7 +202,7 @@ describe("primitiv upgrade", () => {
       writeState(testDir, {
         nextSpecId: 1, nextFeatureId: 1, nextLearningId: 1,
         primitivVersion: "1.0.3",
-        projectRoot: testDir, mode: "brownfield",
+        mode: "brownfield",
         initializedAt: "2026-01-01T00:00:00Z",
       });
 
@@ -221,7 +219,7 @@ describe("primitiv upgrade", () => {
       mkdirSync(join(testDir, ".primitiv"), { recursive: true });
       writeState(testDir, {
         nextSpecId: 1, nextFeatureId: 1,
-        projectRoot: testDir, mode: "brownfield",
+        mode: "brownfield",
         initializedAt: "2026-01-01T00:00:00Z",
       });
 
@@ -240,7 +238,7 @@ describe("primitiv upgrade", () => {
       mkdirSync(join(testDir, ".primitiv"), { recursive: true });
       writeState(testDir, {
         nextSpecId: 1, nextFeatureId: 1,
-        projectRoot: testDir, mode: "brownfield",
+        mode: "brownfield",
         initializedAt: "2026-01-01T00:00:00Z",
       });
 
@@ -260,7 +258,7 @@ describe("primitiv upgrade", () => {
       mkdirSync(join(testDir, ".primitiv"), { recursive: true });
       writeState(testDir, {
         nextSpecId: 1, nextFeatureId: 1,
-        projectRoot: testDir, mode: "brownfield",
+        mode: "brownfield",
         initializedAt: "2026-01-01T00:00:00Z",
       });
 
@@ -274,7 +272,7 @@ describe("primitiv upgrade", () => {
       mkdirSync(join(testDir, ".primitiv"), { recursive: true });
       writeState(testDir, {
         nextSpecId: 1, nextFeatureId: 1,
-        projectRoot: testDir, mode: "brownfield",
+        mode: "brownfield",
         initializedAt: "2026-01-01T00:00:00Z",
       });
       writeFileSync(join(testDir, ".primitiv", "README.md"), "outdated content");
@@ -306,7 +304,7 @@ describe("primitiv upgrade", () => {
       mkdirSync(join(testDir, ".primitiv"), { recursive: true });
       writeState(testDir, {
         nextSpecId: 3, nextFeatureId: 1,
-        projectRoot: testDir, mode: "brownfield",
+        mode: "brownfield",
         initializedAt: "2026-01-01T00:00:00Z",
       });
 

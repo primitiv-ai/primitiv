@@ -18,7 +18,7 @@ describe("SpecManager", () => {
     saveState(testDir, {
       nextSpecId: 1,
       nextFeatureId: 1,
-      projectRoot: testDir,
+
       mode: "greenfield",
       initializedAt: new Date().toISOString(),
     });

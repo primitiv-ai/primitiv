@@ -20,7 +20,7 @@ function createTempProject(): string {
       nextSpecId: 1,
       nextFeatureId: 1,
       nextLearningId: 1,
-      projectRoot: dir,
+
       mode: "brownfield",
       initializedAt: new Date().toISOString(),
     }),

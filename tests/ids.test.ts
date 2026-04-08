@@ -41,7 +41,7 @@ describe("state management", () => {
     const state = {
       nextSpecId: 5,
       nextFeatureId: 3,
-      projectRoot: testDir,
+
       mode: "greenfield" as const,
       initializedAt: new Date().toISOString(),
     };
@@ -55,7 +55,7 @@ describe("state management", () => {
     saveState(testDir, {
       nextSpecId: 1,
       nextFeatureId: 1,
-      projectRoot: testDir,
+
       mode: "greenfield",
       initializedAt: new Date().toISOString(),
     });
@@ -68,7 +68,7 @@ describe("state management", () => {
     saveState(testDir, {
       nextSpecId: 1,
       nextFeatureId: 1,
-      projectRoot: testDir,
+
       mode: "greenfield",
       initializedAt: new Date().toISOString(),
     });
