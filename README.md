@@ -1,7 +1,7 @@
 # Primitiv
 
 [![npm version](https://img.shields.io/npm/v/primitiv)](https://www.npmjs.com/package/primitiv)
-[![CI](https://img.shields.io/github/actions/workflow/status/primitiv-ai/primitiv-spec-engine/ci.yml?branch=main&label=CI)](https://github.com/primitiv-ai/primitiv-spec-engine/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/primitiv-ai/primitiv/ci.yml?branch=main&label=CI)](https://github.com/primitiv-ai/primitiv/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/node/v/primitiv)](https://nodejs.org)
 

@@ -8,13 +8,13 @@
   "bin": {
     "primitiv": "dist/bin/primitiv.js"
   },
-  "homepage": "https://github.com/primitiv-ai/primitiv-spec-engine#readme",
+  "homepage": "https://github.com/primitiv-ai/primitiv#readme",
   "bugs": {
-    "url": "https://github.com/primitiv-ai/primitiv-spec-engine/issues"
+    "url": "https://github.com/primitiv-ai/primitiv/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/primitiv-ai/primitiv-spec-engine.git"
+    "url": "https://github.com/primitiv-ai/primitiv.git"
   },
   "scripts": {
     "build": "tsc",

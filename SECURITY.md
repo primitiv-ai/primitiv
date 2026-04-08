@@ -6,7 +6,7 @@ If you discover a security vulnerability in Primitiv, please report it responsib
 
 **Do NOT open a public issue.**
 
-Instead, use [GitHub Security Advisories](https://github.com/primitiv-ai/primitiv-spec-engine/security/advisories/new) to report the vulnerability privately. This ensures the issue is handled confidentially before any public disclosure.
+Instead, use [GitHub Security Advisories](https://github.com/primitiv-ai/primitiv/security/advisories/new) to report the vulnerability privately. This ensures the issue is handled confidentially before any public disclosure.
 
 ## What to Include
 

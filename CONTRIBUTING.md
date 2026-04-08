@@ -5,7 +5,7 @@ Thanks for your interest in contributing to Primitiv.
 ## Development Setup
 
 ```bash
-git clone https://github.com/primitiv-ai/primitiv-spec-engine.git
+git clone https://github.com/primitiv-ai/primitiv.git
 cd primitiv-spec-engine
 npm install
 npm run build
@@ -45,7 +45,7 @@ primitiv --version
 
 ## Reporting Issues
 
-Use the [issue templates](https://github.com/primitiv-ai/primitiv-spec-engine/issues/new/choose) for bug reports and feature requests.
+Use the [issue templates](https://github.com/primitiv-ai/primitiv/issues/new/choose) for bug reports and feature requests.
 
 ## License
 
