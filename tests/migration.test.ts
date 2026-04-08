@@ -624,8 +624,8 @@ describe("MigrationManager", () => {
       expect(report.architectureMigrated).toBe(true);
       expect(report.warnings).toEqual(
         expect.arrayContaining([
-          expect.stringContaining("gate-1"),
-          expect.stringContaining("gate-2"),
+          expect.stringContaining("company-principles"),
+          expect.stringContaining("security-principles"),
         ])
       );
       // Mapping table data

@@ -7,8 +7,8 @@ This project uses **Primitiv** for Spec Driven Development (SDD).
 ```
 primitiv init .
   │
-  ├─ /primitiv.gate-1  → Company Principles
-  ├─ /primitiv.gate-2  → Security Principles
+  ├─ /primitiv.company-principles  → Company Principles
+  ├─ /primitiv.security-principles  → Security Principles
   │
   ├─ /primitiv.constitution product  → Product Constitution
   ├─ /primitiv.constitution dev      → Development Constitution
@@ -25,8 +25,8 @@ primitiv init .
 
 ## Directory Structure
 
-- `gates/` — Company and security principles (Gates 1 & 2)
-- `constitutions/` — Product, development, and architecture constitutions (Gate 3)
+- `gates/` — Company and security principles
+- `constitutions/` — Product, development, and architecture constitutions
 - `specs/` — Feature specifications with plans and tasks
 - `.state.json` — Engine metadata and ID counters
 
@@ -35,9 +35,9 @@ primitiv init .
 Read this file to understand the SDD workflow. All documents use YAML frontmatter + markdown.
 
 ### Gate Validation Order
-1. **Gate 1**: Company principles — business alignment, compliance
-2. **Gate 2**: Security principles — auth, data handling, networking
-3. **Gate 3**: Constitutions — product fit, dev standards, architecture patterns
+1. **Company Principles** — business alignment, compliance
+2. **Security Principles** — auth, data handling, networking
+3. **Constitutions** — product fit, dev standards, architecture patterns
 
 ### Spec Lifecycle
 `draft → gate-1-passed → gate-2-passed → gate-3-passed → clarified → planned → tasked → in-progress → completed`

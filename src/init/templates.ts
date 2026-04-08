@@ -20,8 +20,8 @@ export function loadTemplate(category: string, name: string): string {
 
 export function getCommandTemplateNames(): string[] {
   return [
-    "primitiv.gate-1.md",
-    "primitiv.gate-2.md",
+    "primitiv.company-principles.md",
+    "primitiv.security-principles.md",
     "primitiv.constitution.md",
     "primitiv.specify.md",
     "primitiv.clarify.md",

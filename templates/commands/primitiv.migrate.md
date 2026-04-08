@@ -64,7 +64,7 @@ Source format: `$ARGUMENTS`
 7. **Report results:**
    - Show spec ID mapping table (original → Primitiv)
    - Show counts: specs migrated, constitutions created, architecture migrated
-   - List manual steps: /primitiv.gate-1, /primitiv.gate-2, development constitution (if missing)
+   - List manual steps: /primitiv.company-principles, /primitiv.security-principles, development constitution (if missing)
 
 ## Output Format
 ```
@@ -86,6 +86,6 @@ Specs migrated:
 Summary: N specs migrated, 2 constitutions, 1 architecture
 
 ⚠ Manual steps remaining:
-  - Create company principles: /primitiv.gate-1
-  - Create security principles: /primitiv.gate-2
+  - Create company principles: /primitiv.company-principles
+  - Create security principles: /primitiv.security-principles
 ```

@@ -29,7 +29,7 @@ Optional project directory: `$ARGUMENTS`
    ```
    Or if a section is missing:
    ```
-   ⚠ security      — not found (generate with /primitiv.gate-2)
+   ⚠ security      — not found (generate with /primitiv.security-principles)
    ```
 
 3. **Show compilation summary:**

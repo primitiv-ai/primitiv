@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Renamed gate commands** — `/primitiv.gate-1` → `/primitiv.company-principles`, `/primitiv.gate-2` → `/primitiv.security-principles`
+  - Self-documenting names replace opaque numbered identifiers
+  - `primitiv upgrade` removes old gate-1/gate-2 files and installs new ones
+  - `primitiv upgrade` regenerates `.primitiv/README.md` from template
+  - Gate numbers dropped from specify output (`Company Principles: Passed` instead of `Gate 1 (Company Principles): Passed`)
+  - All cross-references updated across templates, source files, README, and tests
+
 ### Added
 
 - **Contract Generation in Plan Phase** — contracts (`api-contract.md`, `data-contract.md`) are generated during `/primitiv.plan` and injected as truth into `/primitiv.implement`

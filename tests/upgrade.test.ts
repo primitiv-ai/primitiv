@@ -11,8 +11,17 @@ const FAKE_TEMPLATES: Record<string, string> = {
   "cmd-c.md": "template-content-c-v2",
 };
 
+const FAKE_SPEC_TEMPLATES: Record<string, string> = {
+  "README.md": "# Primitiv — Spec Driven Development\n",
+};
+
 vi.mock("../src/init/templates.js", () => ({
-  loadTemplate: (_category: string, name: string) => {
+  loadTemplate: (category: string, name: string) => {
+    if (category === "specs") {
+      const content = FAKE_SPEC_TEMPLATES[name];
+      if (!content) throw new Error(`Unknown spec template: ${name}`);
+      return content;
+    }
     const content = FAKE_TEMPLATES[name];
     if (!content) throw new Error(`Unknown template: ${name}`);
     return content;
@@ -148,7 +157,7 @@ describe("primitiv upgrade", () => {
       await runUpgrade(testDir);
 
       const output = logSpy.mock.calls.map(c => String(c[0])).join("\n");
-      expect(output).toContain("1 updated, 2 added, 0 unchanged");
+      expect(output).toContain("1 updated, 2 added, 0 removed, 0 unchanged");
     });
 
     it("reports all up to date when content matches", async () => {
@@ -204,6 +213,76 @@ describe("primitiv upgrade", () => {
       // Should still succeed (idempotent)
       const { installSlashCommands } = await import("../src/init/installCommands.js");
       expect(installSlashCommands).toHaveBeenCalled();
+    });
+  });
+
+  describe("Upgrade removes deprecated commands", () => {
+    it("deletes old gate-1 and gate-2 files", async () => {
+      mkdirSync(join(testDir, ".primitiv"), { recursive: true });
+      writeState(testDir, {
+        nextSpecId: 1, nextFeatureId: 1,
+        projectRoot: testDir, mode: "brownfield",
+        initializedAt: "2026-01-01T00:00:00Z",
+      });
+
+      const commandsDir = join(testDir, ".claude", "commands");
+      mkdirSync(commandsDir, { recursive: true });
+      writeFileSync(join(commandsDir, "primitiv.gate-1.md"), "old gate 1");
+      writeFileSync(join(commandsDir, "primitiv.gate-2.md"), "old gate 2");
+
+      await runUpgrade(testDir);
+
+      expect(existsSync(join(commandsDir, "primitiv.gate-1.md"))).toBe(false);
+      expect(existsSync(join(commandsDir, "primitiv.gate-2.md"))).toBe(false);
+    });
+
+    it("reports removed commands in summary", async () => {
+      mkdirSync(join(testDir, ".primitiv"), { recursive: true });
+      writeState(testDir, {
+        nextSpecId: 1, nextFeatureId: 1,
+        projectRoot: testDir, mode: "brownfield",
+        initializedAt: "2026-01-01T00:00:00Z",
+      });
+
+      const commandsDir = join(testDir, ".claude", "commands");
+      mkdirSync(commandsDir, { recursive: true });
+      writeFileSync(join(commandsDir, "primitiv.gate-1.md"), "old");
+      writeFileSync(join(commandsDir, "primitiv.gate-2.md"), "old");
+
+      await runUpgrade(testDir);
+
+      const output = logSpy.mock.calls.map(c => String(c[0])).join("\n");
+      expect(output).toContain("Removed: primitiv.gate-1.md, primitiv.gate-2.md");
+      expect(output).toContain("2 removed");
+    });
+
+    it("does not fail when deprecated files do not exist", async () => {
+      mkdirSync(join(testDir, ".primitiv"), { recursive: true });
+      writeState(testDir, {
+        nextSpecId: 1, nextFeatureId: 1,
+        projectRoot: testDir, mode: "brownfield",
+        initializedAt: "2026-01-01T00:00:00Z",
+      });
+
+      // No old gate files — should not throw
+      await expect(runUpgrade(testDir)).resolves.not.toThrow();
+    });
+  });
+
+  describe("Upgrade regenerates .primitiv/README.md", () => {
+    it("overwrites README from template", async () => {
+      mkdirSync(join(testDir, ".primitiv"), { recursive: true });
+      writeState(testDir, {
+        nextSpecId: 1, nextFeatureId: 1,
+        projectRoot: testDir, mode: "brownfield",
+        initializedAt: "2026-01-01T00:00:00Z",
+      });
+      writeFileSync(join(testDir, ".primitiv", "README.md"), "outdated content");
+
+      await runUpgrade(testDir);
+
+      const content = readFileSync(join(testDir, ".primitiv", "README.md"), "utf-8");
+      expect(content).toBe(FAKE_SPEC_TEMPLATES["README.md"]);
     });
   });
 

@@ -648,10 +648,10 @@ export class MigrationManager {
       mkdirSync(gatesDir, { recursive: true });
     }
     if (!primitivFileExists(this.projectRoot, "gates", "company-principles.md")) {
-      report.warnings.push("Create company principles: /primitiv.gate-1");
+      report.warnings.push("Create company principles: /primitiv.company-principles");
     }
     if (!primitivFileExists(this.projectRoot, "gates", "security-principles.md")) {
-      report.warnings.push("Create security principles: /primitiv.gate-2");
+      report.warnings.push("Create security principles: /primitiv.security-principles");
     }
 
     // 8. Update state

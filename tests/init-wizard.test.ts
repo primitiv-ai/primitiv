@@ -42,7 +42,7 @@ vi.mock("../src/init/greenfield.js", () => ({
     return {
       mode: "greenfield",
       directories: [".primitiv/gates", ".primitiv/constitutions", ".primitiv/specs"],
-      commands: ["primitiv.gate-1.md", "primitiv.specify.md"],
+      commands: ["primitiv.company-principles.md", "primitiv.specify.md"],
       gitNexusInstalled: true,
     };
   }),
@@ -55,7 +55,7 @@ vi.mock("../src/init/brownfield.js", () => ({
     return {
       mode: "brownfield",
       directories: [".primitiv/gates", ".primitiv/constitutions", ".primitiv/specs"],
-      commands: ["primitiv.gate-1.md", "primitiv.specify.md"],
+      commands: ["primitiv.company-principles.md", "primitiv.specify.md"],
       gitNexusInstalled: true,
       detectedStack: {
         languages: ["TypeScript", "JavaScript"],

@@ -142,9 +142,9 @@ The user's feature description: `$ARGUMENTS`
    - Write to `.primitiv/specs/SPEC-XXX-<slug>/spec.md`
 
 6. **Run gate checks:**
-   - **Gate 1 (Company Principles):** Check if the spec aligns with company priorities and boundaries. If company principles exist, verify alignment. Report any violations.
-   - **Gate 2 (Security Principles):** Check if the spec respects security policies. Flag any security concerns.
-   - **Gate 3 (Constitutions):** Check product fit, dev stack compatibility, architecture alignment.
+   - **Company Principles:** Check if the spec aligns with company priorities and boundaries. If company principles exist, verify alignment. Report any violations.
+   - **Security Principles:** Check if the spec respects security policies. Flag any security concerns.
+   - **Constitutions:** Check product fit, dev stack compatibility, architecture alignment.
    - For each gate that passes, update the spec status: `draft → gate-1-passed → gate-2-passed → gate-3-passed`
    - If a gate has no principles/constitution defined yet, warn but don't block.
 
@@ -159,9 +159,9 @@ The user's feature description: `$ARGUMENTS`
   Branch: spec/SPEC-XXX-<slug>
 
 Gate Checks:
-  ✓ Gate 1 (Company Principles): Passed
-  ✓ Gate 2 (Security Principles): Passed
-  ⚠ Gate 3 (Constitutions): Product constitution not found — generate with /primitiv.constitution product
+  ✓ Company Principles: Passed
+  ✓ Security Principles: Passed
+  ⚠ Constitutions: Product constitution not found — generate with /primitiv.constitution product
 
 Next steps:
   /primitiv.clarify     — Resolve assumptions with Q&A

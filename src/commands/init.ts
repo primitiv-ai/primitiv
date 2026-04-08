@@ -15,8 +15,8 @@ export interface InitOptions {
 }
 
 const NEXT_STEPS = [
-  "1. /primitiv.gate-1 generate <company description>",
-  "2. /primitiv.gate-2 generate <security requirements>",
+  "1. /primitiv.company-principles generate <company description>",
+  "2. /primitiv.security-principles generate <security requirements>",
   "3. /primitiv.constitution product generate <product description>",
   "4. /primitiv.specify <feature description>",
 ].join("\n");
@@ -185,8 +185,8 @@ async function runNonInteractive(targetDir: string): Promise<void> {
   }
 
   console.log(chalk.blue("\nNext steps:"));
-  console.log("  1. /primitiv.gate-1 generate <company description>");
-  console.log("  2. /primitiv.gate-2 generate <security requirements>");
+  console.log("  1. /primitiv.company-principles generate <company description>");
+  console.log("  2. /primitiv.security-principles generate <security requirements>");
   console.log("  3. /primitiv.constitution product generate <product description>");
   console.log("  4. /primitiv.specify <feature description>");
 }

@@ -29,6 +29,18 @@ Optional spec ID: `$ARGUMENTS`
 2. Read the spec: `.primitiv/specs/SPEC-XXX-*/spec.md`
 3. Read clarifications (if any): `.primitiv/specs/SPEC-XXX-*/clarifications.md`
 
+4. **Relevant Learnings:**
+   - Read all `.primitiv/learnings/*.md` files (if the directory exists)
+   - Extract keywords from the current spec's title and description
+   - Match learning tags against these keywords (case-insensitive)
+   - If relevant learnings are found, display them in a "Relevant Learnings" section:
+     ```
+     Relevant Learnings:
+       ⚠ LEARN-001 (important): Always validate env vars at startup [validation, configuration]
+       ℹ LEARN-003 (info): Use semantic HTML for accessibility [ui, accessibility]
+     ```
+   - Use ⚠ for important/critical severity, ℹ for info
+
 ### Step 2: Codebase Exploration (CRITICAL)
 Before planning ANY new code, search the existing codebase:
 

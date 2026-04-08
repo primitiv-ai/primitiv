@@ -20,6 +20,18 @@ Optional spec ID: `$ARGUMENTS`
    - Read `.primitiv/constitutions/architecture.md` for system boundaries
    - Identify the spec's `## Test Strategy` section for guidance
 
+   **Relevant Learnings:**
+   - Read all `.primitiv/learnings/*.md` files (if the directory exists)
+   - Extract keywords from the current spec's title and description
+   - Match learning tags against these keywords (case-insensitive)
+   - If relevant learnings are found, display them in a "Relevant Learnings" section:
+     ```
+     Relevant Learnings:
+       ⚠ LEARN-001 (important): Always validate env vars at startup [validation, configuration]
+       ℹ LEARN-003 (info): Use semantic HTML for accessibility [ui, accessibility]
+     ```
+   - Use ⚠ for important/critical severity, ℹ for info
+
 2. **Map acceptance criteria to test structure:**
 
    Read the spec's `## Acceptance Criteria` section and determine the format:

@@ -250,3 +250,4 @@ The Next.js application itself runs natively (not containerized) for fast HMR an
 - @clack/prompts + gradient-string added; new src/ui/ module, install command, CI/CD workflows (.github/workflows/); GovernanceCompiler TS fix; package renamed primitiv v1.0.0 (SPEC-008)
 - N/A (no infrastructure changes — new LearningManager engine class, LearningFrontmatterSchema, learnings[] in GovernanceContext, primitiv learn CLI command, /primitiv.learn slash command, COMPILER_VERSION bumped to 1.2, learnings/ directory added to init) (SPEC-009)
 - N/A (no infrastructure changes — primitiv upgrade replaces primitiv update; new src/utils/version.ts getPackageVersion(); primitivVersion added to StateFile; init flows stamp version; dynamic --version from package.json) (SPEC-010)
+- N/A (no infrastructure changes — renamed gate-1/gate-2 commands to company-principles/security-principles; DEPRECATED_COMMANDS cleanup in upgrade; .primitiv/README.md regeneration) (SPEC-012)

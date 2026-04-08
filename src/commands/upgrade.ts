@@ -1,5 +1,5 @@
 import * as p from "@clack/prompts";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { renderCompactBanner } from "../ui/banner.js";
 import { renderBox } from "../ui/box.js";
@@ -79,6 +79,23 @@ export async function runUpgrade(targetDir: string): Promise<void> {
   installSlashCommands(targetDir);
   installGitNexusMcp(targetDir);
 
+  // 4b. Remove deprecated commands
+  const DEPRECATED_COMMANDS = ["primitiv.gate-1.md", "primitiv.gate-2.md"];
+  const commandsDir = join(targetDir, ".claude", "commands");
+  const removed: string[] = [];
+  for (const name of DEPRECATED_COMMANDS) {
+    const filePath = join(commandsDir, name);
+    if (existsSync(filePath)) {
+      unlinkSync(filePath);
+      removed.push(name);
+    }
+  }
+
+  // 4c. Regenerate .primitiv/README.md from template
+  const primitivReadmePath = join(targetDir, ".primitiv", "README.md");
+  const readmeTemplate = loadTemplate("specs", "README.md");
+  writeFileSync(primitivReadmePath, readmeTemplate);
+
   // 5. Save migrated state
   saveState(targetDir, state);
 
@@ -92,13 +109,17 @@ export async function runUpgrade(targetDir: string): Promise<void> {
     lines.push(`Added: ${diff.added.join(", ")}`);
   }
 
-  if (diff.updated.length === 0 && diff.added.length === 0) {
+  if (removed.length > 0) {
+    lines.push(`Removed: ${removed.join(", ")}`);
+  }
+
+  if (diff.updated.length === 0 && diff.added.length === 0 && removed.length === 0) {
     lines.push("All commands up to date");
   }
 
   lines.push("");
   lines.push(
-    `${diff.updated.length} updated, ${diff.added.length} added, ${diff.unchanged.length} unchanged`,
+    `${diff.updated.length} updated, ${diff.added.length} added, ${removed.length} removed, ${diff.unchanged.length} unchanged`,
   );
 
   const summary = lines.join("\n");

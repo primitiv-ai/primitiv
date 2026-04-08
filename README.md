@@ -7,8 +7,8 @@ Spec Driven Development (SDD) engine for AI-assisted software development. A gat
 ```
 primitiv init .
   │
-  ├─ /primitiv.gate-1  → Company Principles
-  ├─ /primitiv.gate-2  → Security Principles
+  ├─ /primitiv.company-principles   → Company Principles
+  ├─ /primitiv.security-principles  → Security Principles
   │
   ├─ /primitiv.constitution product  → Product Constitution
   ├─ /primitiv.constitution dev      → Development Constitution
@@ -17,7 +17,7 @@ primitiv init .
   ├─ /primitiv.compile              → Compile governance context
   │
   ├─ /primitiv.specify <description> → Create spec (creates git branch)
-  │     ├─ Gate 1, 2, 3 checks (with Gherkin BDD scenarios)
+  │     ├─ Gate checks (with Gherkin BDD scenarios)
   │     ├─ /primitiv.clarify       → Interactive Q&A
   │     ├─ /primitiv.plan          → Technical plan (searches codebase via GitNexus)
   │     ├─ /primitiv.tasks         → Task breakdown
@@ -50,8 +50,8 @@ Use these in Claude Code (or any compatible agent):
 
 | Command | Purpose |
 |---------|---------|
-| `/primitiv.gate-1 generate <description>` | Generate company principles |
-| `/primitiv.gate-2 generate <description>` | Generate security principles |
+| `/primitiv.company-principles generate <description>` | Generate company principles |
+| `/primitiv.security-principles generate <description>` | Generate security principles |
 | `/primitiv.constitution <type> generate <description>` | Generate constitution (product/dev/arch) |
 | `/primitiv.compile` | Compile governance into a structured context |
 | `/primitiv.specify <feature description>` | Create a spec + git branch + run gate checks |
@@ -65,7 +65,7 @@ Use these in Claude Code (or any compatible agent):
 
 All commands also support `amend` to modify existing documents:
 ```
-/primitiv.gate-1 amend add DORA compliance requirement
+/primitiv.company-principles amend add DORA compliance requirement
 /primitiv.constitution dev amend switch from Jest to Vitest
 ```
 
