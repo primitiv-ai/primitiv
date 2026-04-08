@@ -2,7 +2,7 @@
 type: spec
 id: SPEC-010
 title: "Per-Project Upgrade Command"
-status: in-progress
+status: completed
 version: 2
 branch: "spec/SPEC-010-project-upgrade-command"
 author: "Dieu"
