@@ -3,5 +3,7 @@
   "nextFeatureId": 1,
   "projectRoot": "/Users/g.hubert/Documents/GitHub/primitiv-spec-engine",
   "mode": "greenfield",
-  "initializedAt": "2026-03-14T15:27:28.641Z"
+  "initializedAt": "2026-03-14T15:27:28.641Z",
+  "nextLearningId": 1,
+  "primitivVersion": "1.0.3"
 }

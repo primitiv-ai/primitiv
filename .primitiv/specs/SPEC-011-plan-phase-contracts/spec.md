@@ -2,7 +2,7 @@
 type: spec
 id: SPEC-011
 title: "Contract Generation in Plan Phase"
-status: gate-3-passed
+status: completed
 version: 1
 branch: "spec/SPEC-011-plan-phase-contracts"
 author: "Dieu"
