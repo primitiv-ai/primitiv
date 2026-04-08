@@ -1,5 +1,10 @@
 # Primitiv
 
+[![npm version](https://img.shields.io/npm/v/primitiv)](https://www.npmjs.com/package/primitiv)
+[![CI](https://img.shields.io/github/actions/workflow/status/primitiv-ai/primitiv-spec-engine/ci.yml?branch=main&label=CI)](https://github.com/primitiv-ai/primitiv-spec-engine/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/node/v/primitiv)](https://nodejs.org)
+
 Spec Driven Development (SDD) engine for AI-assisted software development. A gated validation pipeline that ensures every feature goes through company principles, security review, and constitutional alignment before implementation.
 
 ## How It Works

@@ -85,7 +85,6 @@ export function initBrownfield(projectRoot: string): InitResult & { detectedStac
   saveState(projectRoot, {
     nextSpecId: 1,
     nextFeatureId: 1,
-    projectRoot,
     mode: "brownfield",
     primitivVersion: getPackageVersion(),
     initializedAt: new Date().toISOString(),

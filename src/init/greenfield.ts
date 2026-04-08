@@ -20,7 +20,6 @@ export function initGreenfield(projectRoot: string): InitResult {
   saveState(projectRoot, {
     nextSpecId: 1,
     nextFeatureId: 1,
-    projectRoot,
     mode: "greenfield",
     primitivVersion: getPackageVersion(),
     initializedAt: new Date().toISOString(),

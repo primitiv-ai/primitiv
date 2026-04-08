@@ -2,7 +2,7 @@
 type: spec
 id: SPEC-012
 title: "Rename Gate Commands to Descriptive Names"
-status: tested
+status: completed
 version: 1
 branch: "spec/SPEC-012-rename-gate-commands"
 author: "Dieu"

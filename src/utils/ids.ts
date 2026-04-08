@@ -6,7 +6,6 @@ interface StateFile {
   nextFeatureId: number;
   nextLearningId?: number;
   primitivVersion?: string;
-  projectRoot: string;
   mode: "greenfield" | "brownfield";
   initializedAt: string;
 }
@@ -23,7 +22,6 @@ export function loadState(projectRoot: string): StateFile {
     return {
       nextSpecId: 1,
       nextFeatureId: 1,
-      projectRoot,
       mode: "greenfield",
       initializedAt: new Date().toISOString(),
     };
