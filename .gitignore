@@ -5,3 +5,4 @@ dist/
 coverage/
 .gitnexus/
 .claude/worktrees/
+.vscode/
