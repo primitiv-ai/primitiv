@@ -14,14 +14,18 @@ primitiv init .
   ├─ /primitiv.constitution dev      → Development Constitution
   ├─ /primitiv.constitution arch     → Architecture Constitution
   │
+  ├─ /primitiv.compile              → Compile governance context
+  │
   ├─ /primitiv.specify <description> → Create spec (creates git branch)
-  │     ├─ Gate 1, 2, 3 checks
+  │     ├─ Gate 1, 2, 3 checks (with Gherkin BDD scenarios)
   │     ├─ /primitiv.clarify       → Interactive Q&A
   │     ├─ /primitiv.plan          → Technical plan (searches codebase via GitNexus)
   │     ├─ /primitiv.tasks         → Task breakdown
   │     ├─ /primitiv.implement     → Execute tasks
   │     ├─ /primitiv.test-feature  → Generate & run tests
   │     └─ /primitiv.compushpr     → Commit, push, PR, squash merge
+  │
+  ├─ primitiv learn                 → Self-learning loop (captures lessons)
   │
   └─ Done
 ```
@@ -38,7 +42,7 @@ primitiv init --brownfield         # skip menu, analyze existing code
 primitiv init --greenfield         # skip menu, empty templates
 ```
 
-This creates `.primitiv/` (gates, constitutions, specs) and installs 12 slash commands into `.claude/commands/`.
+This creates `.primitiv/` (gates, constitutions, specs) and installs slash commands into `.claude/commands/`.
 
 ## Slash Commands
 
@@ -49,6 +53,7 @@ Use these in Claude Code (or any compatible agent):
 | `/primitiv.gate-1 generate <description>` | Generate company principles |
 | `/primitiv.gate-2 generate <description>` | Generate security principles |
 | `/primitiv.constitution <type> generate <description>` | Generate constitution (product/dev/arch) |
+| `/primitiv.compile` | Compile governance into a structured context |
 | `/primitiv.specify <feature description>` | Create a spec + git branch + run gate checks |
 | `/primitiv.clarify` | Interactive Q&A to resolve assumptions |
 | `/primitiv.plan` | Technical plan with codebase analysis |
@@ -56,6 +61,7 @@ Use these in Claude Code (or any compatible agent):
 | `/primitiv.implement` | Execute tasks (parallel when possible via git worktrees) |
 | `/primitiv.test-feature` | Generate & run tests from acceptance criteria |
 | `/primitiv.compushpr` | Commit, push, create PR, squash merge |
+| `/primitiv.migrate` | Migrate from SpecKit to Primitiv |
 
 All commands also support `amend` to modify existing documents:
 ```
@@ -66,11 +72,21 @@ All commands also support `amend` to modify existing documents:
 ## CLI
 
 ```bash
-primitiv status                      # Show all specs and pipeline state
-primitiv status SPEC-001             # Show specific spec details
-primitiv validate SPEC-001           # Validate against all gates
-primitiv validate SPEC-001 --gate 1  # Validate against specific gate
-primitiv update .                    # Update slash commands (preserves data)
+primitiv status                           # Show all specs and pipeline state
+primitiv status SPEC-001                  # Show specific spec details
+primitiv status --filter in-progress      # Filter specs by status
+primitiv status --output report.md        # Export status report to file
+primitiv validate SPEC-001                # Validate against all gates
+primitiv validate SPEC-001 --gate 1       # Validate against specific gate
+primitiv upgrade                          # Upgrade project (sync dirs, commands, config)
+primitiv compile                          # Compile governance into structured context
+primitiv migrate speckit                  # Migrate from SpecKit to Primitiv
+
+# Self-Learning Loop
+primitiv learn add --type best-practice --title "Use batch inserts" --tags "db,perf"
+primitiv learn list --type convention
+primitiv learn search "database"
+primitiv learn remove LEARN-001
 ```
 
 ## SDK
@@ -84,6 +100,9 @@ const engine = PrimitivEngine.load(".");
 engine.getGate("company");
 engine.validateGate("security");
 engine.getConstitution("product");
+
+// Governance compilation
+engine.compile(); // → GovernanceContext (structured, machine-readable)
 
 // Specs
 engine.createSpec({ title: "User Auth", description: "OAuth2 + MFA" });
@@ -113,9 +132,42 @@ draft → gate-1-passed → gate-2-passed → gate-3-passed → clarified → pl
 
 Single-task waves and single-task specs skip the worktree overhead and execute directly.
 
+## Governance Compilation
+
+`/primitiv.compile` (or `primitiv compile`) merges all gates and constitutions into a single `GovernanceContext` — a structured, machine-readable JSON that downstream pipeline stages (specify, plan, implement) consume automatically. This ensures every spec is checked against the full governance surface without manually loading individual files.
+
+## Self-Learning Loop
+
+Primitiv captures lessons learned during development — best practices, error resolutions, and conventions — so they inform future specs:
+
+```bash
+primitiv learn add --type best-practice --title "Use batch inserts for bulk data"
+primitiv learn list
+primitiv learn search "database"
+primitiv learn remove LEARN-001
+```
+
+Learnings are stored in `.primitiv/learnings.json` and automatically surfaced during the specify and plan phases.
+
+## Gherkin BDD
+
+The `/primitiv.specify` command generates Gherkin `Given/When/Then` scenarios as part of the spec's acceptance criteria. These scenarios are used by `/primitiv.test-feature` to generate executable tests, closing the loop between specification and verification.
+
 ## GitNexus Integration
 
 `primitiv init` configures [GitNexus](https://www.npmjs.com/package/gitnexus) as an MCP server. The `/primitiv.plan` command uses GitNexus to search the existing codebase before planning — finding reusable code, understanding architecture, and avoiding rebuilding what exists.
+
+## Migration from SpecKit
+
+If you have an existing SpecKit project, migrate it to Primitiv:
+
+```bash
+primitiv migrate speckit
+```
+
+Or use the slash command: `/primitiv.migrate`
+
+This detects your SpecKit structure, maps specs to Primitiv format, and preserves your existing work.
 
 ## Project Structure
 
@@ -135,6 +187,8 @@ Single-task waves and single-task specs skip the worktree overhead and execute d
 │       ├── plan.md
 │       ├── tasks.md
 │       └── test-results.md
+├── learnings.json                 # Self-learning loop
+├── governance-context.json        # Compiled governance
 └── .state.json
 ```
 

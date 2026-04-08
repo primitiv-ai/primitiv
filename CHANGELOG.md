@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **Contract Generation in Plan Phase** — contracts (`api-contract.md`, `data-contract.md`) are generated during `/primitiv.plan` and injected as truth into `/primitiv.implement`
+  - Contracts define exact API shapes, request/response types, and data models — deviation is a defect
+  - `ContractManager` updated to support `.md` files alongside `.yaml`/`.yml`
+  - New `ContractFrontmatterSchema` Zod schema for contract document validation
+  - Plan frontmatter gains `contracts` field listing generated contracts
+  - Implement command template injects full contract contents into every subagent prompt
+  - Updated README with new features (compile, learn, migrate, upgrade, Gherkin BDD)
+
 - **Per-Project Upgrade Command** — `primitiv upgrade` replaces `primitiv update` with full project upgrade capabilities
   - Syncs `.primitiv/` directory structure (creates missing directories like `learnings/` for older projects)
   - Migrates state file (adds missing fields like `nextLearningId`, `primitivVersion` with safe defaults)
