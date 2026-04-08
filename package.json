@@ -1,6 +1,6 @@
 {
   "name": "primitiv",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Spec Driven Development engine for AI-assisted software development",
   "type": "module",
   "main": "dist/index.js",
