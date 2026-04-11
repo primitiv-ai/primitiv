@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.0.7] - 2026-04-11
+
+### Fixed
+
+- **Published tarball now includes the Web Viewer bundle** — 1.0.6 shipped without `dist/viewer/` because the `publish.yml` workflow ran `npm ci` only at the repo root, so `apps/viewer/node_modules` was never created and `esbuild.config.js` silently skipped the viewer build. `primitiv view` on 1.0.6 failed with "Viewer bundle not found at .../dist/viewer/apps/viewer/server.js".
+  - `.github/workflows/publish.yml` now runs `npm ci --prefix apps/viewer` before `npm run build:publish` and verifies `dist/viewer/apps/viewer/server.js` exists + is at least 1 MB before publishing.
+  - `esbuild.config.js` now **throws** instead of warning when `apps/viewer/node_modules` is missing (unless `SKIP_VIEWER_BUILD=1` is explicitly set), and verifies the copied standalone bundle is in place before returning.
+  - 1.0.6 has been deprecated on npm.
+
 ## [1.0.6] - 2026-04-11
 
 ### Added

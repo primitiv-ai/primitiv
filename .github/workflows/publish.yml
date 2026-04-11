@@ -14,7 +14,23 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org
       - run: npm ci
+      # Install apps/viewer deps so the embedded Next.js 16 bundle can be
+      # built during `npm run build:publish`. Without this step the viewer
+      # build in esbuild.config.js would throw and publishing would abort.
+      - run: npm ci --prefix apps/viewer
       - run: npm run build:publish
+      - name: Verify viewer bundle was packaged
+        run: |
+          if [ ! -f dist/viewer/apps/viewer/server.js ]; then
+            echo "::error::dist/viewer/apps/viewer/server.js is missing — viewer build did not run"
+            exit 1
+          fi
+          SIZE=$(du -sk dist/viewer | cut -f1)
+          echo "Viewer bundle size: ${SIZE} KB"
+          if [ "$SIZE" -lt 1000 ]; then
+            echo "::error::Viewer bundle is smaller than 1 MB (${SIZE} KB) — likely incomplete"
+            exit 1
+          fi
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
