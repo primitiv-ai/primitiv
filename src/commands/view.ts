@@ -120,8 +120,11 @@ export async function runView(targetDir: string, options: ViewOptions): Promise<
 function getViewerBundlePath(): string {
   const override = process.env.PRIMITIV_VIEWER_BUNDLE;
   if (override) return override;
+  // The CLI is bundled to dist/bin/primitiv.js by esbuild. The viewer
+  // standalone bundle lives at dist/viewer/apps/viewer/server.js, so from
+  // dist/bin/ we go up once and then into viewer/apps/viewer/.
   const here = dirname(fileURLToPath(import.meta.url));
-  return resolve(here, "..", "viewer", "server.js");
+  return resolve(here, "..", "viewer", "apps", "viewer", "server.js");
 }
 
 function isPortFree(port: number): Promise<boolean> {

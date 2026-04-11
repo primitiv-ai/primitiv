@@ -8,4 +8,5 @@ coverage/
 .vscode/
 apps/viewer/.next/
 apps/viewer/node_modules/
+dist/viewer/
 

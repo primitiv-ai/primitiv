@@ -19,6 +19,7 @@
   "scripts": {
     "build": "tsc",
     "build:publish": "node esbuild.config.js",
+    "build:viewer": "cd apps/viewer && npm run build && node scripts/copy-standalone.mjs",
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
