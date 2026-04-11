@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+@plugin "@tailwindcss/typography";
 
 @theme inline {
   --color-background: var(--background);
@@ -23,63 +23,102 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --font-sans: var(--font-lato), system-ui, sans-serif;
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-foreground: var(--tertiary-foreground);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-bright: var(--surface-bright);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-inverse-surface: var(--inverse-surface);
+  --color-inverse-on-surface: var(--inverse-on-surface);
+  --color-inverse-primary: var(--inverse-primary);
+  --color-outline: var(--outline);
+  --color-scrim: var(--scrim);
+  --color-shadow: var(--shadow);
+  --radius: var(--radius);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display);
 }
 
-:root {
-  --radius: 0.5rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.141 0.005 285.823);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.21 0.006 285.885);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.21 0.006 285.885);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.705 0.015 286.067);
-}
+@layer base {
+  /* Figma "Website Design System" — M3 Light Scheme */
+  :root {
+    --background: oklch(0.9842 0.0101 311.18);
+    --foreground: oklch(0.2248 0.0116 285.43);
+    --card: oklch(0.9665 0.0114 308.33);
+    --card-foreground: oklch(0.2248 0.0116 285.43);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.2248 0.0116 285.43);
+    --primary: oklch(0.4876 0.0919 283.23);
+    --primary-foreground: oklch(1 0 0);
+    --secondary: oklch(0.9166 0.0339 291.23);
+    --secondary-foreground: oklch(0.3994 0.0335 287.07);
+    --muted: oklch(0.9485 0.0114 308.33);
+    --muted-foreground: oklch(0.3985 0.015 290.8);
+    --accent: oklch(0.9158 0.0434 289.82);
+    --accent-foreground: oklch(0.4039 0.0908 282.36);
+    --destructive: oklch(0.506 0.1927 27.7);
+    --destructive-foreground: oklch(1 0 0);
+    --border: oklch(0.8291 0.0155 298.51);
+    --input: oklch(0.5709 0.0153 295.08);
+    --ring: oklch(0.4876 0.0919 283.23);
+    --tertiary: oklch(0.4915 0.0599 346.02);
+    --tertiary-foreground: oklch(1 0 0);
+    --surface-dim: oklch(0.8897 0.01 305.39);
+    --surface-bright: oklch(0.9842 0.0101 311.18);
+    --surface-container-high: oklch(0.9326 0.0112 303.11);
+    --surface-container-highest: oklch(0.9152 0.0115 308.32);
+    --inverse-surface: oklch(0.3116 0.0106 285.77);
+    --inverse-on-surface: oklch(0.9575 0.0114 308.33);
+    --inverse-primary: oklch(0.8333 0.0864 285.1);
+    --outline: oklch(0.5709 0.0153 295.08);
+    --scrim: oklch(0 0 0);
+    --shadow: oklch(0 0 0);
+    --radius: 0.625rem;
+  }
 
-.dark {
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.92 0.004 286.32);
-  --primary-foreground: oklch(0.21 0.006 285.885);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.552 0.016 285.938);
+  /* Figma "Website Design System" — M3 Dark Scheme */
+  .dark {
+    --background: oklch(0.1891 0.0101 285.4);
+    --foreground: oklch(0.9152 0.0115 308.32);
+    --card: oklch(0.2248 0.0116 285.43);
+    --card-foreground: oklch(0.9152 0.0115 308.32);
+    --popover: oklch(0.1662 0.0104 285.21);
+    --popover-foreground: oklch(0.9152 0.0115 308.32);
+    --primary: oklch(0.8333 0.0864 285.1);
+    --primary-foreground: oklch(0.3181 0.0933 280.52);
+    --secondary: oklch(0.3994 0.0335 287.07);
+    --secondary-foreground: oklch(0.9166 0.0339 291.23);
+    --muted: oklch(0.2429 0.0114 293.18);
+    --muted-foreground: oklch(0.8291 0.0155 298.51);
+    --accent: oklch(0.4039 0.0908 282.36);
+    --accent-foreground: oklch(0.9158 0.0434 289.82);
+    --destructive: oklch(0.8383 0.0891 26.76);
+    --destructive-foreground: oklch(0.3275 0.1336 27.32);
+    --border: oklch(0.3985 0.015 290.8);
+    --input: oklch(0.6561 0.0165 298.4);
+    --ring: oklch(0.8333 0.0864 285.1);
+    --tertiary: oklch(0.8367 0.0649 346.52);
+    --tertiary-foreground: oklch(0.3188 0.0571 345.29);
+    --surface-dim: oklch(0.1891 0.0101 285.4);
+    --surface-bright: oklch(0.3444 0.0121 292.31);
+    --surface-container-high: oklch(0.2844 0.0109 293.34);
+    --surface-container-highest: oklch(0.3284 0.0105 293.46);
+    --inverse-surface: oklch(0.9152 0.0115 308.32);
+    --inverse-on-surface: oklch(0.3116 0.0106 285.77);
+    --inverse-primary: oklch(0.4876 0.0919 283.23);
+    --outline: oklch(0.6561 0.0165 298.4);
+    --scrim: oklch(0 0 0);
+    --shadow: oklch(0 0 0);
+  }
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground;
   }
 }

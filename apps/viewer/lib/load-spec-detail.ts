@@ -11,6 +11,18 @@ export type ArtifactKey =
   | "test-results"
   | "research";
 
+export type TaskStatus = "pending" | "in-progress" | "completed" | "skipped";
+
+export interface TaskCard {
+  id: string;
+  title: string;
+  description?: string;
+  status: TaskStatus;
+  files: string[];
+  acceptanceCriteria: string[];
+  dependsOn: string[];
+}
+
 export interface SpecDetailOk {
   ok: true;
   id: string;
@@ -19,6 +31,7 @@ export interface SpecDetailOk {
   frontmatter: Record<string, unknown>;
   body: string;
   artifacts: Partial<Record<ArtifactKey, string>>;
+  tasksData?: TaskCard[];
 }
 
 export interface SpecDetailError {
@@ -87,6 +100,41 @@ export function loadSpecDetail(specId: string): SpecDetailResult {
   const research = readOptional(join(specDir, "research.md"));
   if (research) artifacts.research = research;
 
+  let tasksData: TaskCard[] | undefined;
+  if (tasks) {
+    try {
+      const tasksParsed = matter(tasks);
+      const rawTasks = (tasksParsed.data as { tasks?: unknown }).tasks;
+      if (Array.isArray(rawTasks)) {
+        tasksData = rawTasks.map((t) => {
+          const item = t as Record<string, unknown>;
+          const rawStatus = typeof item.status === "string" ? item.status : "pending";
+          const normalizedStatus: TaskStatus =
+            rawStatus === "pending" ||
+            rawStatus === "in-progress" ||
+            rawStatus === "completed" ||
+            rawStatus === "skipped"
+              ? rawStatus
+              : "pending";
+          return {
+            id: String(item.id ?? ""),
+            title: String(item.title ?? ""),
+            description:
+              typeof item.description === "string" ? item.description : undefined,
+            status: normalizedStatus,
+            files: Array.isArray(item.files) ? (item.files as string[]) : [],
+            acceptanceCriteria: Array.isArray(item.acceptanceCriteria)
+              ? (item.acceptanceCriteria as string[])
+              : [],
+            dependsOn: Array.isArray(item.dependsOn) ? (item.dependsOn as string[]) : [],
+          };
+        });
+      }
+    } catch {
+      // Malformed tasks frontmatter — leave tasksData undefined, fall back to markdown.
+    }
+  }
+
   return {
     ok: true,
     id: specId,
@@ -95,5 +143,6 @@ export function loadSpecDetail(specId: string): SpecDetailResult {
     frontmatter,
     body: parsed.content,
     artifacts,
+    tasksData,
   };
 }

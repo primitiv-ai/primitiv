@@ -4,6 +4,7 @@ import { FrontmatterPanel } from "@/components/frontmatter-panel";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { StatusBadge } from "@/components/status-badge";
 import { WarningBanner } from "@/components/warning-banner";
+import { TaskViewSwitcher } from "@/components/task-view-switcher";
 import { loadSpecDetail, type ArtifactKey } from "@/lib/load-spec-detail";
 
 export const dynamic = "force-dynamic";
@@ -80,7 +81,11 @@ export default async function SpecDetailPage({ params }: { params: Promise<{ id:
         </TabsList>
         {availableTabs.map((key) => (
           <TabsContent key={key} value={key} className="mt-6">
-            <MarkdownRenderer>{detail.artifacts[key] ?? ""}</MarkdownRenderer>
+            {key === "tasks" && detail.tasksData ? (
+              <TaskViewSwitcher tasks={detail.tasksData} />
+            ) : (
+              <MarkdownRenderer>{detail.artifacts[key] ?? ""}</MarkdownRenderer>
+            )}
           </TabsContent>
         ))}
       </Tabs>
