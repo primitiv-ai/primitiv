@@ -1,6 +1,6 @@
 import { build } from "esbuild";
 import { execSync } from "child_process";
-import { rmSync, readFileSync, writeFileSync } from "fs";
+import { rmSync, readFileSync, writeFileSync, existsSync } from "fs";
 import { builtinModules } from "module";
 
 // Node built-in modules (both "fs" and "node:fs" forms)
@@ -14,8 +14,13 @@ const pkg = JSON.parse(readFileSync("package.json", "utf8"));
 // Clean dist/
 rmSync("dist", { recursive: true, force: true });
 
-// Generate type declarations with tsc
-execSync("tsc --emitDeclarationOnly --declaration --outDir dist", {
+// Full tsc compile — produces both .js and .d.ts under dist/.
+// The esbuild bundling below overwrites dist/bin/primitiv.js and
+// dist/index.js with bundled/minified versions, but leaves the rest
+// of dist/src/* alone. The viewer (SPEC-013) imports engine modules
+// from dist/src/engine/*.js via its @cli/* path alias, so these files
+// must exist before `next build` runs for apps/viewer.
+execSync("tsc --outDir dist", {
   stdio: "inherit",
 });
 
@@ -58,5 +63,19 @@ await build({
   outfile: "dist/index.js",
   external: Object.keys(pkg.dependencies || {}),
 });
+
+// Build the viewer (SPEC-013) and copy its standalone bundle into dist/viewer/
+if (process.env.SKIP_VIEWER_BUILD) {
+  console.log("Build complete — viewer build skipped via SKIP_VIEWER_BUILD.");
+} else if (!existsSync("apps/viewer/node_modules")) {
+  console.warn(
+    "Skipping viewer build: apps/viewer/node_modules not installed. Run `npm install` inside apps/viewer/ before publishing.",
+  );
+} else {
+  console.log("Building apps/viewer (Next.js 16 standalone)...");
+  execSync("npm run build", { cwd: "apps/viewer", stdio: "inherit" });
+  console.log("Copying viewer standalone bundle into dist/viewer/...");
+  execSync("node scripts/copy-standalone.mjs", { cwd: "apps/viewer", stdio: "inherit" });
+}
 
 console.log("Build complete — bundled and minified.");

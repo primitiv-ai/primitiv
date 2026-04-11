@@ -6,6 +6,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.0.6] - 2026-04-11
+
+### Added
+
+- **Web Spec Viewer** — new `primitiv view` command launches a read-only Next.js 16 web viewer for the current Primitiv project (SPEC-013)
+  - Dashboard: spec counts by status, gate and constitution presence badges, parse-error surface
+  - Specs list with sortable headers, client-side filter, and friendly empty state
+  - Spec detail with dynamic tabs per artifact (spec / clarifications / plan / tasks / test results / research); Gherkin-aware markdown rendering highlights Feature/Scenario headings and Given/When/Then keywords
+  - Tasks tab features a 4-column Kanban board and a React Flow dependency graph (dagre auto-layout); each task card or node opens a Jira-style detail modal via shadcn Dialog
+  - Gates, constitutions, and learnings routes with collapsible metadata panels (native `<details>`, closed by default)
+  - Graceful handling of malformed frontmatter: parse errors render as warning banners above the raw body, and malformed specs still appear in list views
+  - Viewer ships as a prebuilt Next.js standalone bundle under `dist/viewer/` (~40MB); no build step on the user's machine, works fully offline
+  - `primitiv view --port <n>` (default 3141, 127.0.0.1-only), `--no-open` to suppress browser launch, clear error on port-in-use or uninitialised project
+  - Engine layer extended: `SpecManager.listWithErrors()` surfaces malformed specs instead of silently skipping them, `getSpecGraph()` gains `research` / `checklistFiles` / `dataModelFiles` fields
+  - New `apps/viewer/` workspace with design tokens and UI primitives mirrored from primitiv-platform (M3 dark palette, Inter + Clash Display fonts, radix-ui umbrella, shadcn new-york components)
+  - New runtime dependencies (viewer-only): `@xyflow/react`, `@dagrejs/dagre`, `radix-ui`, `react-markdown`, `remark-gfm`, `rehype-highlight`, `gray-matter`, `lucide-react`, `chokidar`, `ws`; new dev dependencies: `@tailwindcss/typography`, `tw-animate-css`
+  - Root package gains `open ^10` for browser launch and a `build:viewer` script wired into the publish pipeline
+
+### Changed
+
+- **Architecture constitution rewritten as v2** — now describes the Primitiv CLI (not the Platform), with 5 new ADRs: CLI-vs-Platform scoping, filesystem as source of truth, engine reuse seam between CLI and viewer, prebuilt standalone packaging, read-only/loopback-only viewer
+- Publish pipeline (`esbuild.config.js`) now runs full `tsc` (not declaration-only) before bundling so `dist/src/**/*.js` exists for the viewer's `@cli/*` path alias, then builds the viewer and copies the standalone bundle into `dist/viewer/`
+
+### Known limitations
+
+- Live reload (chokidar + WebSocket) is stubbed: the custom Next.js server approach broke on Next.js 16 standalone due to webpack-lib resolution. The viewer uses Next.js's default standalone `server.js` and all routes are `force-dynamic`, so manual browser refresh picks up every filesystem change immediately. A follow-up spec will re-introduce live reload via a Server Sent Events Route Handler.
+- Playwright E2E suite deferred: a manual end-to-end smoke test against the real `.primitiv/` tree confirmed the happy path (server spawn, HTTP 200, dashboard with 14 specs and correct gate/constitution badges, clean SIGTERM exit).
+
+## [1.0.5]
+
 ### Changed
 
 - **Renamed gate commands** — `/primitiv.gate-1` → `/primitiv.company-principles`, `/primitiv.gate-2` → `/primitiv.security-principles`

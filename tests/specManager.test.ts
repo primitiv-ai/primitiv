@@ -144,6 +144,58 @@ describe("SpecManager", () => {
     });
   });
 
+  describe("listWithErrors", () => {
+    it("returns empty ok and empty errors when no specs exist", () => {
+      const result = manager.listWithErrors();
+      expect(result.ok).toEqual([]);
+      expect(result.errors).toEqual([]);
+    });
+
+    it("returns all valid specs in ok with no errors", () => {
+      manager.create("Feature A", "Desc A", undefined, "tester");
+      manager.create("Feature B", "Desc B", undefined, "tester");
+      const result = manager.listWithErrors();
+      expect(result.ok).toHaveLength(2);
+      expect(result.errors).toEqual([]);
+    });
+
+    it("surfaces malformed specs in errors instead of silently skipping", () => {
+      manager.create("Good Feature", "Valid spec", undefined, "tester");
+      // Manually write a malformed spec with unterminated YAML string
+      const badDir = join(testDir, ".primitiv", "specs", "SPEC-999-broken");
+      mkdirSync(badDir, { recursive: true });
+      writeFileSync(
+        join(badDir, "spec.md"),
+        '---\ntitle: "unterminated string\nid: SPEC-999\n---\n\n# Broken\n',
+      );
+
+      const result = manager.listWithErrors();
+      expect(result.ok).toHaveLength(1);
+      expect(result.ok[0].data.id).toBe("SPEC-001");
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors[0].dir).toBe("SPEC-999-broken");
+      expect(result.errors[0].file).toBe("spec.md");
+      expect(result.errors[0].error.length).toBeGreaterThan(0);
+    });
+
+    it("filter.status applies to ok but not to errors", () => {
+      manager.create("Feature A", "Desc A", undefined, "tester");
+      // Add a malformed spec
+      const badDir = join(testDir, ".primitiv", "specs", "SPEC-999-broken");
+      mkdirSync(badDir, { recursive: true });
+      writeFileSync(
+        join(badDir, "spec.md"),
+        '---\ntitle: "unterminated\n---\n\n# Broken\n',
+      );
+
+      // filter to "planned" — SPEC-001 is draft, should be excluded from ok
+      const result = manager.listWithErrors({ status: "planned" });
+      expect(result.ok).toHaveLength(0);
+      // errors still reported regardless of filter
+      expect(result.errors).toHaveLength(1);
+    });
+  });
+
   describe("updateStatus", () => {
     it("updates spec status with valid transition", () => {
       manager.create("Feature", "Desc", undefined, "tester");
@@ -236,6 +288,9 @@ describe("SpecManager", () => {
       expect(graph.tasks).toBeNull();
       expect(graph.testResults).toBeNull();
       expect(graph.clarifications).toBeNull();
+      expect(graph.research).toBeNull();
+      expect(graph.checklistFiles).toEqual([]);
+      expect(graph.dataModelFiles).toEqual([]);
     });
 
     it("includes clarifications when they exist", () => {
@@ -245,6 +300,55 @@ describe("SpecManager", () => {
       const graph = manager.getSpecGraph("SPEC-001");
       expect(graph.clarifications).not.toBeNull();
       expect(graph.clarifications).toContain("Some clarifications here");
+    });
+
+    it("includes raw research content when research.md exists", () => {
+      manager.create("Feature", "Desc", undefined, "tester");
+      const specDir = join(testDir, ".primitiv", "specs", "SPEC-001-feature");
+      writeFileSync(join(specDir, "research.md"), "# Research\n\nSome research notes.");
+      const graph = manager.getSpecGraph("SPEC-001");
+      expect(graph.research).not.toBeNull();
+      expect(graph.research).toContain("Some research notes");
+    });
+
+    it("returns research as null when research.md is absent", () => {
+      manager.create("Feature", "Desc", undefined, "tester");
+      const graph = manager.getSpecGraph("SPEC-001");
+      expect(graph.research).toBeNull();
+    });
+
+    it("lists files inside checklists/ when the directory exists", () => {
+      manager.create("Feature", "Desc", undefined, "tester");
+      const specDir = join(testDir, ".primitiv", "specs", "SPEC-001-feature");
+      const checklistsDir = join(specDir, "checklists");
+      mkdirSync(checklistsDir, { recursive: true });
+      writeFileSync(join(checklistsDir, "review.md"), "# Review\n");
+      writeFileSync(join(checklistsDir, "deploy.md"), "# Deploy\n");
+      const graph = manager.getSpecGraph("SPEC-001");
+      expect(graph.checklistFiles).toHaveLength(2);
+      expect(graph.checklistFiles.sort()).toEqual(["deploy.md", "review.md"]);
+    });
+
+    it("returns checklistFiles as empty array when directory is absent", () => {
+      manager.create("Feature", "Desc", undefined, "tester");
+      const graph = manager.getSpecGraph("SPEC-001");
+      expect(graph.checklistFiles).toEqual([]);
+    });
+
+    it("lists files inside data-model/ when the directory exists", () => {
+      manager.create("Feature", "Desc", undefined, "tester");
+      const specDir = join(testDir, ".primitiv", "specs", "SPEC-001-feature");
+      const dataModelDir = join(specDir, "data-model");
+      mkdirSync(dataModelDir, { recursive: true });
+      writeFileSync(join(dataModelDir, "entities.md"), "# Entities\n");
+      const graph = manager.getSpecGraph("SPEC-001");
+      expect(graph.dataModelFiles).toEqual(["entities.md"]);
+    });
+
+    it("returns dataModelFiles as empty array when directory is absent", () => {
+      manager.create("Feature", "Desc", undefined, "tester");
+      const graph = manager.getSpecGraph("SPEC-001");
+      expect(graph.dataModelFiles).toEqual([]);
     });
   });
 });

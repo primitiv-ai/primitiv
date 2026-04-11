@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { writePrimitivFile, listSpecDirs, getSpecDir, getPrimitivRoot } from "../utils/fileSystem.js";
 import { parseDocument, serializeDocument } from "../utils/frontmatter.js";
@@ -80,6 +80,33 @@ export class SpecManager {
     return specs;
   }
 
+  listWithErrors(filter?: { status?: SpecStatus }): {
+    ok: ParsedDocument<SpecFrontmatter>[];
+    errors: { dir: string; file: string; error: string }[];
+  } {
+    const dirs = listSpecDirs(this.projectRoot);
+    const ok: ParsedDocument<SpecFrontmatter>[] = [];
+    const errors: { dir: string; file: string; error: string }[] = [];
+    for (const dir of dirs) {
+      const specPath = join(getPrimitivRoot(this.projectRoot), "specs", dir, "spec.md");
+      if (!existsSync(specPath)) continue;
+      const raw = readFileSync(specPath, "utf-8");
+      try {
+        const doc = parseDocument(raw, SpecFrontmatterSchema);
+        if (!filter?.status || doc.data.status === filter.status) {
+          ok.push(doc);
+        }
+      } catch (err) {
+        errors.push({
+          dir,
+          file: "spec.md",
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
+    }
+    return { ok, errors };
+  }
+
   updateStatus(specId: string, newStatus: SpecStatus): void {
     const doc = this.get(specId);
     const previousStatus = doc.data.status;
@@ -131,6 +158,36 @@ export class SpecManager {
     const clarPath = join(dir, "clarifications.md");
     const clarifications = existsSync(clarPath) ? readFileSync(clarPath, "utf-8") : null;
 
-    return { spec, plan, tasks, testResults, clarifications };
+    const researchPath = join(dir, "research.md");
+    const research = existsSync(researchPath) ? readFileSync(researchPath, "utf-8") : null;
+
+    const checklistFiles = listSubdirFiles(dir, "checklists");
+    const dataModelFiles = listSubdirFiles(dir, "data-model");
+
+    return {
+      spec,
+      plan,
+      tasks,
+      testResults,
+      clarifications,
+      research,
+      checklistFiles,
+      dataModelFiles,
+    };
+  }
+}
+
+function listSubdirFiles(specDir: string, subdirName: string): string[] {
+  const subdirPath = join(specDir, subdirName);
+  if (!existsSync(subdirPath)) return [];
+  try {
+    const stat = statSync(subdirPath);
+    if (!stat.isDirectory()) return [];
+    return readdirSync(subdirPath).filter((name) => {
+      const entryStat = statSync(join(subdirPath, name));
+      return entryStat.isFile();
+    });
+  } catch {
+    return [];
   }
 }

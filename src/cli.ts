@@ -9,6 +9,7 @@ import { getPackageVersion } from "./utils/version.js";
 import { runMigrate } from "./commands/migrate.js";
 import { runCompile } from "./commands/compile.js";
 import { runLearnAdd, runLearnList, runLearnSearch, runLearnRemove } from "./commands/learn.js";
+import { runView } from "./commands/view.js";
 
 export function createCli(): Command {
   const program = new Command();
@@ -69,6 +70,20 @@ export function createCli(): Command {
     .description("Compile governance files into a structured context")
     .action(async () => {
       await runCompile(resolve("."));
+    });
+
+  program
+    .command("view")
+    .description("View the current Primitiv project in a web browser (read-only)")
+    .option("--port <number>", "Port to bind on 127.0.0.1", "3141")
+    .option("--no-open", "Do not open the default browser")
+    .action(async (options: { port: string; open: boolean }) => {
+      const handle = await runView(resolve("."), {
+        port: Number(options.port),
+        open: options.open,
+      });
+      const code = await handle.exited;
+      process.exitCode = code;
     });
 
   const learn = program
