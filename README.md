@@ -32,6 +32,8 @@ primitiv init .
   │
   ├─ primitiv learn                 → Self-learning loop (captures lessons)
   │
+  ├─ primitiv view                  → Browse specs, gates, constitutions in a local web UI
+  │
   └─ Done
 ```
 
@@ -87,12 +89,23 @@ primitiv upgrade                          # Upgrade project (sync dirs, commands
 primitiv compile                          # Compile governance into structured context
 primitiv migrate speckit                  # Migrate from SpecKit to Primitiv
 
+# Web Viewer
+primitiv view                             # Launch the read-only web viewer in your browser
+primitiv view --port 4200                 # Override the default port (3141)
+primitiv view --no-open                   # Start the server without opening a browser
+
 # Self-Learning Loop
 primitiv learn add --type best-practice --title "Use batch inserts" --tags "db,perf"
 primitiv learn list --type convention
 primitiv learn search "database"
 primitiv learn remove LEARN-001
 ```
+
+### Web Viewer
+
+`primitiv view` launches a read-only Next.js 16 web interface that renders the current project's `.primitiv/` directory: dashboard, specs list, per-spec detail with tabs for every artifact (spec, clarifications, plan, tasks, test results, research), gates, constitutions, and learnings. The Tasks tab offers both a 4-column Kanban board and an interactive dependency graph (pan/zoom, click a node to open the task in a full detail modal). Gates and constitutions render with collapsible metadata panels and Gherkin-aware markdown highlighting for `Feature:` / `Scenario:` / `Given` / `When` / `Then` blocks.
+
+The viewer is **local-only** — it binds to `127.0.0.1` and has no authentication. The bundle ships prebuilt inside the `primitiv` npm package (no `next build` on your machine), so `primitiv view` launches instantly. All routes re-read the filesystem on every request, so `Cmd/Ctrl+R` picks up any changes you make via the slash commands.
 
 ## SDK
 
