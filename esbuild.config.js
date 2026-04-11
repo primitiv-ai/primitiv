@@ -64,18 +64,30 @@ await build({
   external: Object.keys(pkg.dependencies || {}),
 });
 
-// Build the viewer (SPEC-013) and copy its standalone bundle into dist/viewer/
+// Build the viewer (SPEC-013) and copy its standalone bundle into dist/viewer/.
+// This step is MANDATORY for a publishable tarball — shipping without it
+// breaks `primitiv view` for every consumer. Opt out explicitly via
+// SKIP_VIEWER_BUILD=1 for CLI-only iteration.
 if (process.env.SKIP_VIEWER_BUILD) {
   console.log("Build complete — viewer build skipped via SKIP_VIEWER_BUILD.");
-} else if (!existsSync("apps/viewer/node_modules")) {
-  console.warn(
-    "Skipping viewer build: apps/viewer/node_modules not installed. Run `npm install` inside apps/viewer/ before publishing.",
-  );
 } else {
+  if (!existsSync("apps/viewer/node_modules")) {
+    throw new Error(
+      "Viewer build required but apps/viewer/node_modules is missing. " +
+        "Run `npm ci --prefix apps/viewer` before `npm run build:publish`, " +
+        "or set SKIP_VIEWER_BUILD=1 to bypass explicitly.",
+    );
+  }
   console.log("Building apps/viewer (Next.js 16 standalone)...");
   execSync("npm run build", { cwd: "apps/viewer", stdio: "inherit" });
   console.log("Copying viewer standalone bundle into dist/viewer/...");
   execSync("node scripts/copy-standalone.mjs", { cwd: "apps/viewer", stdio: "inherit" });
+  if (!existsSync("dist/viewer/apps/viewer/server.js")) {
+    throw new Error(
+      "Viewer build completed but dist/viewer/apps/viewer/server.js is missing. " +
+        "Check apps/viewer/scripts/copy-standalone.mjs output.",
+    );
+  }
 }
 
 console.log("Build complete — bundled and minified.");
