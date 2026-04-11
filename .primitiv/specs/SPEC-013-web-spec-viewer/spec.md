@@ -2,12 +2,12 @@
 type: spec
 id: SPEC-013
 title: "Web Spec Viewer"
-status: in-progress
-version: 5
+status: completed
+version: 6
 branch: "spec/SPEC-013-web-spec-viewer"
 author: "gh-prim"
 createdAt: "2026-04-11T00:00:00Z"
-updatedAt: "2026-04-11T22:00:00Z"
+updatedAt: "2026-04-11T23:45:00Z"
 ---
 
 # SPEC-013: Web Spec Viewer
